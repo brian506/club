@@ -16,8 +16,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +30,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig   {
 
     private final LoginService loginService;
     private final JwtService jwtService;
@@ -38,6 +40,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+
         http
                 .formLogin(formLogin -> formLogin.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
@@ -45,7 +49,8 @@ public class SecurityConfig {
                 .headers(headerConfig -> headerConfig.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/sign-up", "/login").permitAll()
+                        .requestMatchers("/sign-up").permitAll()
+                        .requestMatchers("/auth/login", "/auth/refresh").permitAll()
                         .requestMatchers("/users/**").hasRole(Role.USER.name())
                         .requestMatchers("/admins/**").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated()
@@ -53,37 +58,52 @@ public class SecurityConfig {
 
         http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
         http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomLoginAuthenticationFilter.class);
+
         return http.build();
     }
-
+    // CustomLogin (1)
     @Bean
     public CustomLoginAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter() {
-        CustomLoginAuthenticationFilter customJsonUsernamePasswordLoginFilter =
-                new CustomLoginAuthenticationFilter(objectMapper);
-        customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
-        customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
-        customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
+        //CustomJsonUsernamePasswordAuthenticationFilter 에서 인증할 객체(Authentication) 생성
+        CustomLoginAuthenticationFilter customJsonUsernamePasswordLoginFilter
+                = new CustomLoginAuthenticationFilter(objectMapper);
+
+        //일반 로그인 인증 로직
+        customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager()); // 인증 매니저 설정
+        customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler()); // 로그인 성공 시 핸들러 설정
+        customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler()); // 로그인 실패 시 핸들러 설정
         return customJsonUsernamePasswordLoginFilter;
     }
 
+    // CustomLogin (2)
     @Bean
-    public AuthenticationManager authenticationManager() {
+    public AuthenticationManager authenticationManager() { // 스프링 시큐리티의 인증을 처리한다.
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        //비밀번호 인코딩
         provider.setPasswordEncoder(passwordEncoder());
+        //loginService loadUserByUsername 호출 이때 DaoAuthenticationProvider 가 username 을 꺼내서 loadUserByUsername 을 호출
         provider.setUserDetailsService(loginService);
+        // loadUserByUsername 에서 전달받은 UserDetails 에서 password를 추출해 내부의 PasswordEncoder 에서 password 가 일치하는지 검증을 수행
         return new ProviderManager(provider);
     }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationProcessingFilter() {
-        return new JwtAuthenticationFilter(jwtService, userRepository, adminUserRepository);
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService, userRepository,adminUserRepository);
+        return jwtAuthenticationFilter;
     }
 
+    /**
+     * 로그인 성공 시 호출되는 LoginSuccessJWTProviderHandler 빈 등록
+     */
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, userRepository, adminUserRepository);
+        return new LoginSuccessHandler(jwtService, userRepository,adminUserRepository);
     }
 
+    /**
+     * 로그인 실패 시 호출되는 LoginFailureHandler 빈 등록
+     */
     @Bean
     public LoginFailureHandler loginFailureHandler() {
         return new LoginFailureHandler();

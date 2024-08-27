@@ -1,0 +1,48 @@
+# Spring Datasource Configuration
+spring:
+  sql:
+    init:
+      mode: always
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/club?serverTimezone=Asia/Seoul
+    username: root
+    password: 6298
+    hikari:
+      max-lifetime: 1800000 # 30?
+      idle-timeout: 600000 # 10?
+      connection-timeout: 30000 # 30?
+
+
+  # JPA Configuration
+  jpa:
+    defer-datasource-initialization: false
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+
+logging:
+  file:
+    name: application.log
+  level:
+    org.springframework: INFO
+    com.yourpackage: DEBUG
+
+club:
+  join-code: "0506"
+
+  jwt:
+    secretKey: Z2ZkZmdkZmxrZ2pkbGZrZ2pzYXNkamtoYXNrZGphaHNka2fahgvfahvduyasdffjkhsgdfjkhasgfjkphaGRhc2Rhc2Rhc2Rhc2Rhc2ZhZmdzZAo
+
+    access:
+      expiration: 3600000 # 1??(60?) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h))
+      header: Authorization
+
+    refresh:
+      expiration: 1209600000 #  (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h) * 24L(h -> ??) * 14(2?))
+      header: Authorization-refresh

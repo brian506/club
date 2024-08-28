@@ -12,9 +12,14 @@ spring:
       max-lifetime: 1800000 # 30?
       idle-timeout: 600000 # 10?
       connection-timeout: 30000 # 30?
+    http:
+      encoding:
+        charset: UTF-8
+        enabled: true
+        force: true
 
 
-  # JPA Configuration
+    # JPA Configuration
   jpa:
     defer-datasource-initialization: false
     properties:

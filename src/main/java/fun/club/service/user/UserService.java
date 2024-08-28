@@ -4,6 +4,7 @@ import fun.club.core.common.mapper.UserMapper;
 import fun.club.core.common.request.SignupRequestDto;
 import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
+import fun.club.secure.service.JwtService;
 import fun.club.service.user.validation.UserServiceValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final UserServiceValidation validation;
+    private final JwtService jwtService;
 
     public Long signUp(SignupRequestDto dto) throws Exception {
         validation.validateSignUp(dto.getEmail(), dto.getUsername());

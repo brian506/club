@@ -27,6 +27,7 @@ public class SignupRequestDto {
     private String password2;
 
     @NotBlank(message = "'-' 붙이지 않고 8자리로 입력하세요")
+    @Length(min = 8,max = 8)
     private String phoneNumber;
 
     @NotBlank

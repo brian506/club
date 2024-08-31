@@ -1,4 +1,4 @@
-package fun.club.core.base;
+package fun.club.common.base;
 
 import jakarta.persistence.*;
 import lombok.Getter;

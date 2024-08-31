@@ -1,6 +1,5 @@
 package fun.club.service.user.validation;
 
-import fun.club.core.common.request.SignupRequestDto;
 import fun.club.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

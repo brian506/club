@@ -1,4 +1,4 @@
-package fun.club.core.common.util;
+package fun.club.common.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

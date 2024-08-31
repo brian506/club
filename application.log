@@ -1209,3 +1209,6 @@ Caused by: java.lang.IllegalArgumentException: authenticationManager must be spe
 2024-08-28T18:14:07.479+09:00  INFO 76808 --- [http-nio-8080-exec-4] f.c.secure.handler.LoginFailureHandler   : 로그인에 실패했습니다. 메시지 : Authentication Content-Type not supported: application/json; charset=utf-8
 2024-08-28T18:14:12.592+09:00  INFO 76808 --- [http-nio-8080-exec-5] f.c.secure.handler.LoginFailureHandler   : 로그인에 실패했습니다. 메시지 : Authentication Content-Type not supported: application/json; charset=utf-8
 2024-08-28T18:14:14.273+09:00  INFO 76808 --- [http-nio-8080-exec-6] f.c.secure.handler.LoginFailureHandler   : 로그인에 실패했습니다. 메시지 : Authentication Content-Type not supported: application/json; charset=utf-8
+2024-08-28T18:55:51.784+09:00  INFO 76808 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-08-28T18:55:51.793+09:00  INFO 76808 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-08-28T18:55:51.808+09:00  INFO 76808 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

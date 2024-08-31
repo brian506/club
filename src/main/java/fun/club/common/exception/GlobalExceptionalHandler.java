@@ -1,6 +1,6 @@
-package fun.club.core.common.exception;
+package fun.club.common.exception;
 
-import fun.club.core.common.util.SuccessResponse;
+import fun.club.common.util.SuccessResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

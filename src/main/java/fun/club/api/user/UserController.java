@@ -1,19 +1,25 @@
 package fun.club.api.user;
 
-import fun.club.core.common.request.LoginDto;
-import fun.club.core.common.request.SignupRequestDto;
-import fun.club.core.common.response.AuthResponse;
-import fun.club.core.common.util.SuccessResponse;
+import fun.club.common.request.LoginDto;
+import fun.club.common.request.SignupRequestDto;
+import fun.club.common.response.AuthResponse;
+import fun.club.common.response.UserInfoResponse;
+import fun.club.common.util.SuccessResponse;
 import fun.club.secure.service.JwtService;
 import fun.club.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,14 +29,14 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
-
+    // 회원가입
     @PostMapping(value = "/sign-up")
     public ResponseEntity<?> signup(@RequestBody @Valid SignupRequestDto dto) throws Exception {
         Long user = userService.signUp(dto);
         SuccessResponse response = new SuccessResponse<>(true,"회원 등록 성공",user);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
 
@@ -47,6 +53,44 @@ public class UserController {
 
         return new ResponseEntity<>(response,HttpStatus.OK);
 
+    }
+    // 프로필 사진 업로드
+    @PostMapping("/users/{userId}/profile")
+    public ResponseEntity<?> uploadProfile(@PathVariable Long userId,
+                                                @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
+        userService.updateProfile(userId, profileImage);
+
+        SuccessResponse response = new SuccessResponse<>(true,"프로필 사진 업로드 성공",profileImage);
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+    // 본인 프로필 조회
+    @GetMapping("/users/userId")
+    public ResponseEntity<?> getUserId(@RequestParam Long userId){
+        UserInfoResponse id = userService.findById(userId);
+        SuccessResponse response = new SuccessResponse<>(true,"회원 조회 성공",id);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    // 다른 사용자가 프로필 조회 - 이름
+    @GetMapping("/users/usernames")
+    public ResponseEntity<?> getUserNames(@RequestParam String username) {
+        UserInfoResponse user = userService.findByUsername(username);
+        SuccessResponse response = new SuccessResponse<>(true,"회원이름으로 조회 성공",user);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    // 인증된(로그인중인) 사용자 조회
+    @GetMapping("/users/userInfo")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<UserInfoResponse> findLoginUser() {
+        // 현재 인증된 사용자 정보 가져오기
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserInfoResponse userInfo = userService.findByEmail(email);
+        return ResponseEntity.ok(userInfo);
+        /**
+         * 현재 로그인한 사용자의 정보를 가져오는 동작을 해야 회원 본인 프로필을 조회가 가능하다.
+         */
     }
 }
 

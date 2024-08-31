@@ -1,21 +1,5 @@
 package fun.club.api.user;
 
-import fun.club.core.common.request.LoginDto;
-import fun.club.core.common.request.RefreshTokenRequest;
-import fun.club.core.common.response.AuthResponse;
-import fun.club.core.user.domain.User;
-import fun.club.core.user.repository.UserRepository;
-import fun.club.secure.service.JwtService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
-
 //@RestController
 //@RequestMapping("/auth")
 //@RequiredArgsConstructor

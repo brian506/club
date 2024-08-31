@@ -12,3 +12,6 @@ public enum Role {
 
     private final String value;
 }
+/**
+ * 회원가입 후에 ADMIN 으로 지정하거나 USER 로 나중에 변경할 수 있게
+ */

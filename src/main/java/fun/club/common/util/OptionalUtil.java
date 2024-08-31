@@ -1,4 +1,4 @@
-package fun.club.core.common.util;
+package fun.club.common.util;
 
 import java.util.Optional;
 

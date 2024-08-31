@@ -1,4 +1,4 @@
-package fun.club.core.common.response;
+package fun.club.common.response;
 
 import lombok.Getter;
 import lombok.Setter;

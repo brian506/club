@@ -1,4 +1,4 @@
-package fun.club.core.common.request;
+package fun.club.common.request;
 
 import lombok.Builder;
 import lombok.Getter;

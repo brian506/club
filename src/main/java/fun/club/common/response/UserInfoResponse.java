@@ -1,4 +1,4 @@
-package fun.club.core.common.response;
+package fun.club.common.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +7,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 @Builder
-public class UserInfoResponseDto {
+public class UserInfoResponse {
     // 사용자가 다른 사용자 보고 싶을 때 보내는 응답
+    private Long id;
 
     private String username;
 

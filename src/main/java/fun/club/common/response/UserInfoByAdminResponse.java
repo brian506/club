@@ -1,4 +1,4 @@
-package fun.club.core.common.response;
+package fun.club.common.response;
 
 
 import fun.club.core.user.domain.Role;
@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class UserInfoByAdminResponseDto {
+public class UserInfoByAdminResponse {
     // 임원이 사용자 정보 볼때 필요한 응답
 
     private Long id; // 식별자 값으로 조회하기 위함

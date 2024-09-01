@@ -16,10 +16,10 @@ import java.util.List;
 public class FreeBoard {
 
     @Id @GeneratedValue
-    @Column(name = "freeboard_id")
+    @Column(name = "freeBoard_id")
     private Long id;
 
-    @OneToMany(mappedBy = "freeboard", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "freeBoard", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
 

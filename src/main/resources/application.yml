@@ -40,9 +40,9 @@ logging:
 
 club:
   join-code: "0506"
-
   jwt:
-    secretKey: Y2hvcHBhLWRvbnQtYml0ZS1tZS1zcHJpbmctYm9vdC1qd3QtdGVzdC1zZWNyZXQta2V5LWNob3BwYS1kb250LWJpdGUtbWUtc3ByaW5nLWJvb3Qtand0LXRlc3Qtc2VjcmV0LWtleQo=
+    secretKey: BKftrrmGsGK10_wjPMRWElEfCddhgilDaLjtRG4DjEvm1jcoTuejPIA4K1tfpaF1uUVFnQ13Vyb9U19eQ6l1GA==
+
 
     access:
       expiration: 3600000 # 1??(60?) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h))

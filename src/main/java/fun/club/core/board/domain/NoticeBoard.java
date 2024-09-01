@@ -15,10 +15,10 @@ import java.util.List;
 public class NoticeBoard {
 
     @Id @GeneratedValue
-    @Column(name = "noticeboard_id")
+    @Column(name = "noticeBoard_id")
     private Long id;
 
-    @OneToMany(mappedBy = "noticeboard", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "noticeBoard", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Post> posts;
 
 }

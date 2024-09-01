@@ -65,8 +65,9 @@ public class UserController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
     // 본인 프로필 조회
-    @GetMapping("/users/userId")
-    public ResponseEntity<?> getUserId(@RequestParam Long userId){
+    @GetMapping("/users/{userId}")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    public ResponseEntity<?> getUserId(@PathVariable Long userId){
         UserInfoResponse id = userService.findById(userId);
         SuccessResponse response = new SuccessResponse<>(true,"회원 조회 성공",id);
         return new ResponseEntity<>(response,HttpStatus.OK);
@@ -80,17 +81,20 @@ public class UserController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    // 인증된(로그인중인) 사용자 조회
+
+     /** 인증된(로그인중인) 사용자 조회
+      *  현재 로그인한 사용자의 정보를 가져오는 동작을 해야 회원 본인 프로필을 조회가 가능하다.
+      */
     @GetMapping("/users/userInfo")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserInfoResponse> findLoginUser() {
         // 현재 인증된 사용자 정보 가져오기
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         UserInfoResponse userInfo = userService.findByEmail(email);
+        SuccessResponse response = new SuccessResponse(true,"인증정보 조회 성공",userInfo);
+
         return ResponseEntity.ok(userInfo);
-        /**
-         * 현재 로그인한 사용자의 정보를 가져오는 동작을 해야 회원 본인 프로필을 조회가 가능하다.
-         */
+
     }
 }
 

@@ -7,6 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SuccessResponse<T> {
     private boolean success;
-    private T message;
+    private String message;
     private T data;
 }

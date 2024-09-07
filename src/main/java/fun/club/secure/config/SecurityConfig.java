@@ -33,7 +33,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig implements WebMvcConfigurer {
+public class SecurityConfig  {
 
     private final LoginService loginService;
     private final JwtService jwtService;
@@ -52,15 +52,15 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .headers(headerConfig -> headerConfig.frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/sign-up").permitAll()
+                        .requestMatchers("/users").permitAll()
                         .requestMatchers("/auth/login", "/auth/refresh").permitAll()
-                        .requestMatchers("/users/**").hasRole(Role.USER.name())
-                        .requestMatchers("/admins/**").hasRole(Role.ADMIN.name())
-                        .anyRequest().authenticated()
+                       .requestMatchers("/users/**").hasRole(Role.USER.name())
+                       .requestMatchers("/admins/**").hasRole(Role.ADMIN.name())
+                        .anyRequest().permitAll()
                 );
 
-        http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-        http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomLoginAuthenticationFilter.class);
+       http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
+       http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomLoginAuthenticationFilter.class);
 
         return http.build();
     }
@@ -115,13 +115,6 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("http://10.0.2.2:8080") // Android 에뮬레이터 주소
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowCredentials(true);
     }
 
 }

@@ -5,10 +5,12 @@ import fun.club.common.request.SignupRequestDto;
 import fun.club.common.response.AuthResponse;
 import fun.club.common.response.UserInfoResponse;
 import fun.club.common.util.SuccessResponse;
+import fun.club.core.user.repository.UserRepository;
 import fun.club.secure.service.JwtService;
 import fun.club.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,13 +23,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(produces  = "application/json; charset=UTF-8")
+@RequestMapping()
 public class UserController {
 
     private final UserService userService;
     private final JwtService jwtService;
+
 
     // 회원가입
     @PostMapping(value = "/sign-up")
@@ -42,14 +46,19 @@ public class UserController {
 
         // 인증 성공시
         String accessToken = jwtService.createAccessToken(loginDto.getEmail());
+        log.info("Generated Access Token: {}", accessToken);
+        // Access Token 검증
+        boolean isValid = jwtService.isTokenValid(accessToken);
+        log.info("Is Access Token valid? {}", isValid);
+
         String refreshToken = jwtService.createRefreshToken();
 
         // db 에 저장
         jwtService.updateRefreshToken(loginDto.getEmail(), refreshToken);
 
-        System.out.println(new AuthResponse(accessToken, refreshToken));
+        AuthResponse authResponse = new AuthResponse(accessToken, refreshToken);
 
-        SuccessResponse response = new SuccessResponse<>(true,"로그인 성공",refreshToken);
+        SuccessResponse<AuthResponse> response = new SuccessResponse<>(true,"로그인 성공",authResponse);
 
         return new ResponseEntity<>(response,HttpStatus.OK);
 
@@ -60,13 +69,14 @@ public class UserController {
                                                 @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
         userService.updateProfile(userId, profileImage);
 
-        SuccessResponse response = new SuccessResponse<>(true,"프로필 사진 업로드 성공",profileImage);
+        String profileImageUrl = userService.getProfileImageUrl(userId);
+        SuccessResponse response = new SuccessResponse<>(true,"프로필 사진 업로드 성공",profileImageUrl);
 
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
     // 본인 프로필 조회
     @GetMapping("/users/{userId}")
-    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<?> getUserId(@PathVariable Long userId){
         UserInfoResponse id = userService.findById(userId);
         SuccessResponse response = new SuccessResponse<>(true,"회원 조회 성공",id);

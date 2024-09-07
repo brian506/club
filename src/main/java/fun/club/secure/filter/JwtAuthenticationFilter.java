@@ -103,15 +103,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .filter(jwtService::isTokenValid)
                 .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
                         .ifPresent(email -> {
-                            // AdminUser 먼저 조회
-                            Optional<AdminUser> adminUser = adminUserRepository.findByEmail(email);
-                            if (adminUser.isPresent()) {
-                                saveAuthenticationForAdmin(adminUser.get());
-                            } else {
-                                // AdminUser가 없으면 User 조회
-                                userRepository.findByEmail(email)
-                                        .ifPresent(this::saveAuthenticationForUser);
+                            // AdminUser 조회
+                            Optional<AdminUser> adminUserOptional = adminUserRepository.findByEmail(email);
+                            if (adminUserOptional.isPresent()) {
+                                saveAuthenticationForAdmin(adminUserOptional.get());
                             }
+
+                            // User 조회 (AdminUser가 없거나 관계없이)
+                            Optional<User> userOptional = userRepository.findByEmail(email);
+                            userOptional.ifPresent(this::saveAuthenticationForUser);
                         }));
 
         filterChain.doFilter(request, response);
@@ -145,7 +145,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(password)
-                .roles(user.getRole().name())
+                .roles("USER")
                 .build();
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(

@@ -1,10 +1,18 @@
 package fun.club.secure.service;
 
 
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fun.club.common.response.AuthResponse;
+import fun.club.common.util.SuccessResponse;
 import fun.club.core.admin.repository.AdminUserRepository;
 import fun.club.core.user.repository.UserRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -14,6 +22,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -72,7 +82,7 @@ public class JwtService {
     // AccessToken 헤더에 실어서 보내기
     public void sendAccessToken(HttpServletResponse response, String accessToken) {
         response.setStatus(HttpServletResponse.SC_OK);
-        response.setHeader(accessHeader, accessToken);
+        response.setHeader(accessHeader, accessToken.trim());
         log.info("재발급된 Access Token : {}", accessToken);
     }
 
@@ -88,22 +98,23 @@ public class JwtService {
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(refreshHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+                .map(refreshToken -> refreshToken.replace(BEARER, "").trim());
     }
 
     // AccessToken 추출
     public Optional<String> extractAccessToken(HttpServletRequest request) {
         return Optional.ofNullable(request.getHeader(accessHeader))
-                .filter(refreshToken -> refreshToken.startsWith(BEARER))
-                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+                .filter(accessToken -> accessToken.startsWith(BEARER))
+                .map(accessToken -> accessToken.replace(BEARER, "").trim());
     }
 
     // AccessToken에서 이메일 추출
     public Optional<String> extractEmail(String accessToken) {
+        log.info("엑세스 토큰에서 리프레시 토큰이 정상적으로 추출되었습니다");
         try {
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
                     .build()
-                    .verify(accessToken)
+                    .verify(accessToken.trim())
                     .getClaim(EMAIL_CLAIM)
                     .asString());
         } catch (Exception e) {
@@ -114,12 +125,12 @@ public class JwtService {
 
     // AccessToken 헤더 설정
     public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
-        response.setHeader(accessHeader, accessToken);
+        response.setHeader(accessHeader, "Bearer " + accessToken.trim());
     }
 
     // RefreshToken 헤더 설정
     public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
-        response.setHeader(refreshHeader, refreshToken);
+        response.setHeader(refreshHeader, "Bearer " + refreshToken.trim());
     }
 
     // refreshToken을 DB에 업데이트하는 메서드
@@ -148,11 +159,14 @@ public class JwtService {
     // 토큰 유효성 검사 메서드
     public boolean isTokenValid(String token) {
         try {
-            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token.trim());
             return true;
-        } catch (Exception e) {
+        } catch (JWTVerificationException e) {
             log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
         }
     }
+    /**
+     * 토큰 앞에 공백을 없애야 한다.
+     */
 }

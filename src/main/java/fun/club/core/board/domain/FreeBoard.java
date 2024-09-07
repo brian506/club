@@ -20,8 +20,12 @@ public class FreeBoard {
     private Long id;
 
     @OneToMany(mappedBy = "freeBoard", cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Post> posts = new ArrayList<>();
+    private List<Post> posts;
 
+    public void addPost(Post post) {
+        posts.add(post);
+        post.setFreeBoard(this);
+    }
 
 
 }

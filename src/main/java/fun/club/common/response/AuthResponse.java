@@ -1,10 +1,12 @@
 package fun.club.common.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class AuthResponse {
     private String accessToken;
     private String refreshToken;
@@ -13,4 +15,5 @@ public class AuthResponse {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
+
 }

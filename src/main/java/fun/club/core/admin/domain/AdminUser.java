@@ -1,5 +1,7 @@
 package fun.club.core.admin.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fun.club.common.base.BaseTimeEntity;
 import fun.club.core.user.domain.User;
 import jakarta.persistence.*;
@@ -33,9 +35,10 @@ public class AdminUser extends BaseTimeEntity {
 
     private String refreshToken;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @Setter
+    @JsonBackReference
     private User user;
 
     @Setter

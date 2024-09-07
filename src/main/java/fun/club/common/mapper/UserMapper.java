@@ -20,7 +20,7 @@ public interface UserMapper {
     @Mapping(target = "password", source = "password1")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "profileImageUrl",ignore = true)
-//    @Mapping(target = "accessCode",ignore = true) // 따로 안해도 됨?
+   //@Mapping(target = "accessCode",ignore = true) // 따로 안해도 됨?,dto에는 있고 엔티티에는 없는거는 그냥 알아서 매핑해줌
     User toEntity(SignupRequestDto signupRequestDto);
 
     UserInfoResponse toDto(User user);

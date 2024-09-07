@@ -6,6 +6,7 @@ import fun.club.core.admin.repository.AdminUserRepository;
 import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LoginService implements UserDetailsService {
@@ -36,7 +37,11 @@ public class LoginService implements UserDetailsService {
 
         // 일반 User 테이블에서 찾기
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 이메일이 존재하지 않습니다."));
+                .orElseThrow(() -> {
+                    log.warn("해당 이메일로 가입된 사용자가 없습니다. 이메일 : {}",email);
+                    return new UsernameNotFoundException("해당 이메일이 존재하지 않습니다.");
+
+                });
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())

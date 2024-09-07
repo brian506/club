@@ -41,13 +41,12 @@ logging:
 club:
   join-code: "0506"
   jwt:
-    secretKey: BKftrrmGsGK10_wjPMRWElEfCddhgilDaLjtRG4DjEvm1jcoTuejPIA4K1tfpaF1uUVFnQ13Vyb9U19eQ6l1GA==
-
+    secretKey: IaxBKbMeY5LjofoAIdmlCI57qRtHbRZef71zVwgip5BuNPK0nccM4oJYUJQoaPYeDfBmeYWBzRd4j1XYEx26gQ==
 
     access:
-      expiration: 3600000 # 1??(60?) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h))
-      header: Authorization
+     expiration: 3600000 # 1시간(60분) (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h))
+     header: Authorization
 
     refresh:
-      expiration: 1209600000 #  (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h) * 24L(h -> ??) * 14(2?))
-      header: Authorization-refresh
+     expiration: 1209600000 #  (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h) * 24L(h -> 하루) * 14(2주))
+     header: Authorization-refresh

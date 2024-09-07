@@ -2,6 +2,7 @@ package fun.club.secure.handler;
 
 import fun.club.core.admin.domain.AdminUser;
 import fun.club.core.admin.repository.AdminUserRepository;
+import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
 import fun.club.secure.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 
@@ -43,13 +45,14 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
             adminUserRepository.saveAndFlush(adminUser);
         } else {
             // User 조회
-            userRepository.findByEmail(email)
-                    .ifPresent(user -> {
-                        user.updateRefreshToken(refreshToken);
-                        userRepository.saveAndFlush(user);
-                    });
-        }
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                user.updateRefreshToken(refreshToken);
+                userRepository.saveAndFlush(user);
+            }else log.warn("로그인에 실패하였습니다. 이메일 : {}",email);
 
+        }
         log.info("로그인에 성공하였습니다. 이메일 : {}", email);
         log.info("로그인에 성공하였습니다. AccessToken : {}", accessToken);
         log.info("발급된 AccessToken 만료 기간 : {}", accessTokenExpiration);

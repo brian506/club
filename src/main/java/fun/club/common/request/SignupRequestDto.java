@@ -41,6 +41,5 @@ public class SignupRequestDto {
     private String joinCode;
     // user 엔티티에는 필요없음(DB에 저장X)
 
-    private MultipartFile profileUrl;
 }
 // dto는 데이터 전송만을 하기 때문에 비밀번호 더블체크 메서드는 service 계층에서 만들자

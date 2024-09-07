@@ -43,10 +43,12 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
 	//jwt 라이브러리
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-	implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
-	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+//	// Jackson 라이브러리 (JSON 변환을 위해)
+//	implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
 
 	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
 	implementation 'jakarta.servlet:jakarta.servlet-api:5.0.0'

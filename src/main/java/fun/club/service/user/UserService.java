@@ -36,11 +36,8 @@ public class UserService {
 
 
     public Long signUp(SignupRequestDto dto) throws Exception {
-        validation.validateSignUp(dto.getEmail(), dto.getUsername());
 
-        validation.validatePassword(dto.getPassword1(), dto.getPassword2());
-
-        validation.validateCode(dto.getJoinCode());
+        validation.validateAll(dto);
 
         User user = userMapper.toEntity(dto);
 
@@ -69,7 +66,6 @@ public class UserService {
         // user 인 회원이 admin 으로 권한 변경되면 adminUser 엔티티에 저장
     }
 
-
     /**
      * 비밀번호 인코딩(암호화)
      */
@@ -87,7 +83,7 @@ public class UserService {
 
         // 기존 파일 삭제 (있는 경우)
         if (user.getProfileImageUrl() != null) {
-            fileService.deleteFile(user.getProfileImageUrl());
+            fileService.deleteFile(user.getProfileImageUrl(),true);
         }
 
         // 새 파일 저장
@@ -95,6 +91,10 @@ public class UserService {
         user.setProfileImageUrl(fileName);
 
         userRepository.save(user);
+    }
+    public String getProfileImageUrl(Long userId) {
+        User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId), "존재하지 않는 회원 ID 입니다");
+        return user.getProfileImageUrl();
     }
 
 

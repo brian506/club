@@ -17,7 +17,7 @@ import java.util.UUID;
 public class FileService {
 
     private final String userUploadDir = "/Users/brian/Documents/user_profile/"; // 파일이 저장되는 경로, 맨 뒤에 / 붙여야함
-    private final String postUploadDir = "/Users/brian/Documents/post/";
+    private final String postUploadDir = "/Users/brian/Documents/postDetails/";
 
     // 파일 저장
     public String saveFile(MultipartFile file) throws IOException {

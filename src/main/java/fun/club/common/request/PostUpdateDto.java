@@ -3,6 +3,7 @@ package fun.club.common.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class PostUpdateDto {
@@ -17,6 +18,6 @@ public class PostUpdateDto {
     @Size(min = 1, max = 500)
     private String content;
 
-    private String image;
+    private MultipartFile image;
 
 }

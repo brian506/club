@@ -3,6 +3,7 @@ spring:
   sql:
     init:
       mode: always
+      data-locations: classpath:data.sql
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/club?serverTimezone=Asia/Seoul
@@ -27,7 +28,7 @@ spring:
         show_sql: true
         format_sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     database-platform: org.hibernate.dialect.MySQLDialect
 
 

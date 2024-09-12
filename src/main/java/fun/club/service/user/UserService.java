@@ -12,8 +12,6 @@ import fun.club.core.user.repository.UserRepository;
 import fun.club.service.file.FileService;
 import fun.club.service.user.validation.UserServiceValidation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,11 +53,18 @@ public class UserService {
     public void assignAdminRole(Long userId){
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId),"등록되지 않은 회원 ID 입니다");
 
-        user.setRole(Role.ADMIN);
-        userRepository.save(user);
+//        user.setRole(Role.ADMIN);
+        userRepository.delete(user);
 
-        AdminUser admin = new AdminUser();
-        admin.setUser(user);
+        AdminUser admin = AdminUser.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .password(passwordEncoder.encode(user.getPassword()))
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build();
+
         admin.setAssignedAt(LocalDateTime.now());
 
         adminUserRepository.save(admin);
@@ -76,7 +81,6 @@ public class UserService {
     /**
      * 프로필 사진 업로드
      */
-    @Transactional
     public void updateProfile(Long userId, MultipartFile profileImage) throws IOException {
 
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId),"존재하지 않는 회원 ID 입니다");
@@ -115,7 +119,7 @@ public class UserService {
     }
 
     public UserInfoResponse findByEmail(String email) {
-        User user =   OptionalUtil.getOrElseThrow(userRepository.findByEmail(email),"존재하지 않는 이메일입니다.");
+        User user = OptionalUtil.getOrElseThrow(userRepository.findByEmail(email),"존재하지 않는 이메일입니다.");
         return userMapper.toDto(user);
     }
 

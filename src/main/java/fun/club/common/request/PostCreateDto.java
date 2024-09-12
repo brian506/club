@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Builder
 public class PostCreateDto {
-
     @NotBlank
     @Size(min = 1, max = 30)
     private String title;
@@ -19,7 +18,5 @@ public class PostCreateDto {
     private String content;
 
     private MultipartFile image;
-
-    private String boardType;
 
 }

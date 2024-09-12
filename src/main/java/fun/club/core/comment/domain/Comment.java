@@ -1,7 +1,7 @@
 package fun.club.core.comment.domain;
 
 import fun.club.common.base.BaseTimeEntity;
-import fun.club.core.post.domain.Post;
+import fun.club.core.post.domain.PostDetails;
 import fun.club.core.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class Comment extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post;
+    private PostDetails postDetails;
 
 
 

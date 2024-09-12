@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import fun.club.common.base.BaseTimeEntity;
 import fun.club.core.user.domain.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class AdminUser extends BaseTimeEntity {
 
     @Id
@@ -35,11 +33,11 @@ public class AdminUser extends BaseTimeEntity {
 
     private String refreshToken;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @Setter
-    @JsonBackReference
-    private User user;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "user_id")
+//    @Setter
+//    @JsonBackReference
+//    private User user;
 
     @Setter
     private LocalDateTime assignedAt;

@@ -1,6 +1,7 @@
 package fun.club.core.comment.domain;
 
 import fun.club.common.base.BaseTimeEntity;
+import fun.club.core.post.domain.Board;
 import fun.club.core.post.domain.PostDetails;
 import fun.club.core.user.domain.User;
 import jakarta.persistence.*;
@@ -24,8 +25,8 @@ public class Comment extends BaseTimeEntity {
     private User writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private PostDetails postDetails;
+    @JoinColumn(name = "board_id")
+    private Board board;
 
 
 

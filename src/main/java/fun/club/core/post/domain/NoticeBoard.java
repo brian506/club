@@ -10,11 +10,8 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Getter
 @NoArgsConstructor
-@SuperBuilder
 public class NoticeBoard extends Board {
 
-    @Embedded
-    private PostDetails postDetails;
 /**
  * 공지게시판에는 알림 기능을 설정하여 글이 올라오면 알림이 가게끔 설정
  */

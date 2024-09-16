@@ -3,6 +3,7 @@ package fun.club.core.admin.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fun.club.common.base.BaseTimeEntity;
+import fun.club.core.user.domain.Role;
 import fun.club.core.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,10 @@ public class AdminUser extends BaseTimeEntity {
 
     private String refreshToken;
 
+    @Enumerated(EnumType.STRING)
+    @Setter
+    private Role role;
+
 //    @OneToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id")
 //    @Setter
@@ -41,6 +46,10 @@ public class AdminUser extends BaseTimeEntity {
 
     @Setter
     private LocalDateTime assignedAt;
+
+    public void passwordEncode(String encodePassword) {
+        this.password = encodePassword;
+    }
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;

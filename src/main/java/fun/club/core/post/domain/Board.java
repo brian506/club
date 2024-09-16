@@ -16,22 +16,23 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Builder
 public abstract class Board extends BaseTimeEntity {
 
     @Id @GeneratedValue
-    @Column(name = "post_id")
+    @Column(name = "board_id")
     private Long id;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User writer;
 
     @Embedded
+    @Setter
     private PostDetails postDetails;
 
-    @OneToMany(mappedBy = "postDetails")
+    @OneToMany(mappedBy = "board")
     private List<Comment> comments = new ArrayList<>();
 
 

@@ -3,6 +3,8 @@ package fun.club.service.post;
 import fun.club.common.mapper.BoardMapper;
 import fun.club.common.request.PostCreateDto;
 import fun.club.common.request.PostUpdateDto;
+import fun.club.common.response.BoardResponse;
+import fun.club.common.util.ListUtil;
 import fun.club.common.util.OptionalUtil;
 import fun.club.common.util.SecurityUtil;
 import fun.club.core.post.domain.Board;
@@ -19,11 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional()
 @RequiredArgsConstructor
 public class FreeBoardService implements PostService{
 
@@ -76,8 +79,21 @@ public class FreeBoardService implements PostService{
 
     // 게시물 조회(pageable) - 사용자가 작성한 게시물들 조회
     @Override
-    public Page<Board> findAllByWriter(Pageable pageable, Long writerId) {
+    public Page<BoardResponse> findAllByWriter(Pageable pageable) {
         User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()),"존재하지 않는 회원입니다.");
-        return boardRepository.findPostsByWriter(writer,pageable);
+        Page<Board> boards = boardRepository.findAllByWriter(writer,pageable);
+        return boards.map(boardMapper::responseToDto);
+    }
+
+    @Override
+    public List<BoardResponse> findByTitle(String title) {
+
+        List<FreeBoard> boards = ListUtil.getOrElseThrowList(boardRepository.findByTitleInFreeBoard(title),"존재하지 않는 게시물입니다.");
+        // 같은 제목이 여러 개 있을 수 있으니 List로 받음
+
+        // List<FreeBoard> -> List<BoardResponse> 변환
+        return boards.stream()
+                .map(boardMapper::responseToDto)
+                .collect(Collectors.toList());
     }
 }

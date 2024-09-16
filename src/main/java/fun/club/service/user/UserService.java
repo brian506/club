@@ -41,12 +41,27 @@ public class UserService {
 
         encodeAndSetPassword(user, dto.getPassword1());
 
-        if (userRepository.count() == 0){
+        User savedUser = userRepository.save(user);
+
+        if (userRepository.count() == 1){
             user.setRole(Role.ADMIN);
+            AdminUser admin = AdminUser.builder()
+                    .id(savedUser.getId()) // ID는 새로 생성된 ID를 사용해야 합니다
+                    .username(savedUser.getUsername())
+                    .password((user.getPassword()))
+                    // 사용자의 비번을 인코딩한 후 user 객체에 저장하고 후에 adminUser 를 생성할 때 비밀번호를 다시 인코딩하면 user 와 adminUser의 비번이 다를 수 있으므로 이미 인코딩된 비번을 사용해야함
+                    .email(savedUser.getEmail())
+                    .phoneNumber(savedUser.getPhoneNumber())
+                    .profileImageUrl(savedUser.getProfileImageUrl())
+                    .role(Role.ADMIN)
+                    .assignedAt(LocalDateTime.now())
+                    .build();
+            adminUserRepository.save(admin);
+
         }else user.setRole(Role.USER);
         // 처음 회원가입 한 회원은 ADMIN, 나머진 다 USER
 
-        return userRepository.save(user).getId();
+        return savedUser.getId();
     }
 
     // ADMIN 권한 부여

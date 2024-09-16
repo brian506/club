@@ -24,9 +24,12 @@ public class LoginService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        log.info("Attempting to load user by email: {}", email);
         // AdminUser 테이블에서 먼저 찾기
         Optional<AdminUser> adminUserOptional = adminUserRepository.findByEmail(email);
+
         if (adminUserOptional.isPresent()) {
+            log.info("AdminUser found: {}", email);
             AdminUser adminUser = adminUserOptional.get();
             return org.springframework.security.core.userdetails.User.builder()
                     .username(adminUser.getEmail())
@@ -42,6 +45,7 @@ public class LoginService implements UserDetailsService {
                     return new UsernameNotFoundException("해당 이메일이 존재하지 않습니다.");
 
                 });
+        log.info("User found: {}", email);
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(user.getPassword())

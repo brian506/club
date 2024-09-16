@@ -2,6 +2,8 @@ package fun.club.common.mapper;
 
 import fun.club.common.request.PostCreateDto;
 import fun.club.common.request.PostUpdateDto;
+import fun.club.common.response.BoardResponse;
+import fun.club.core.post.domain.Board;
 import fun.club.core.post.domain.FreeBoard;
 import fun.club.core.post.domain.NoticeBoard;
 import fun.club.core.user.domain.User;
@@ -15,14 +17,14 @@ public interface BoardMapper {
 
     BoardMapper INSTANCE = Mappers.getMapper(BoardMapper.class);
 
-    @Mapping(target = "image", ignore = true)
+
     @Mapping(target = "writer", expression = "java(writer)")
     @Mapping(target = "postDetails.title", source = "postCreateDto.title")
     @Mapping(target = "postDetails.content", source = "postCreateDto.content")
     FreeBoard freeBoardFromDto(PostCreateDto postCreateDto, User writer);
     // dto 에서의 값을 postDetails 의 값에 매핑 시키는 것(값을 옮기는 느낌)
 
-    @Mapping(target = "image",  ignore = true)
+
     @Mapping(target = "writer", expression = "java(writer)")
     @Mapping(target = "postDetails.title", source = "postCreateDto.title")
     @Mapping(target = "postDetails.content", source = "postCreateDto.content")
@@ -30,13 +32,19 @@ public interface BoardMapper {
 
     @Mapping(target = "postDetails.title", source = "postUpdateDto.title")
     @Mapping(target = "postDetails.content", source = "postUpdateDto.content")
-    void updateBoardFromDto(PostUpdateDto postUpdateDto, @MappingTarget NoticeBoard noticeBoard);
+    void updateBoardFromDto(PostUpdateDto postUpdateDto, @MappingTarget Board board);
 
     @Mapping(target = "postDetails.title", source = "postUpdateDto.title")
     @Mapping(target = "postDetails.content", source = "postUpdateDto.content")
     void updateBoardFromDto(PostUpdateDto postUpdateDto, @MappingTarget FreeBoard freeBoard);
 
+
+    @Mapping(target = "title",source = "board.postDetails.title")
+    @Mapping(target = "content",source = "board.postDetails.content")
+    @Mapping(target = "id",source = "board.id")
+    BoardResponse responseToDto(Board board);
 }
+
 
 /**
  * postDetails 엔티티 필드값에 dto 필드값이 없으면 자동으로 매피해주지 않는다.(impl 에서 설정해야됨)

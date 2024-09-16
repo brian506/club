@@ -34,10 +34,10 @@ public abstract class BaseTimeEntity {
     }
 
 
-    @CreatedBy // 등록자
-    @Column(updatable = false)
-    private String createdBy;
-
-    @LastModifiedBy // 수정자
-    private String modifiedBy;
+//    @CreatedBy // 등록자
+//    @Column(updatable = false)
+//    private String createdBy;
+//
+//    @LastModifiedBy // 수정자
+//    private String modifiedBy;
 }

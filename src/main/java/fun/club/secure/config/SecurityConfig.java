@@ -17,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,7 +34,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig  {
+@EnableGlobalMethodSecurity(prePostEnabled = true) // @PreAuthorize 등 권한에 대한 작업 처리
+public class SecurityConfig {
 
     private final LoginService loginService;
     private final JwtService jwtService;
@@ -53,9 +55,8 @@ public class SecurityConfig  {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/users").permitAll()
-                        .requestMatchers("/auth/login", "/auth/refresh").permitAll()
-                       .requestMatchers("/users/**").hasRole(Role.USER.name())
-                       .requestMatchers("/admins/**").hasRole(Role.ADMIN.name())
+                       .requestMatchers("/admins/**").hasRole("ADMIN")
+                        .requestMatchers("/noticeBoard/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 );
 
@@ -69,7 +70,7 @@ public class SecurityConfig  {
     public CustomLoginAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter() {
         //CustomJsonUsernamePasswordAuthenticationFilter 에서 인증할 객체(Authentication) 생성
         CustomLoginAuthenticationFilter customJsonUsernamePasswordLoginFilter
-                = new CustomLoginAuthenticationFilter(objectMapper);
+                = new CustomLoginAuthenticationFilter(objectMapper,jwtService);
 
         //일반 로그인 인증 로직
         customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager()); // 인증 매니저 설정

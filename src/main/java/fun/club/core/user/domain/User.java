@@ -4,6 +4,7 @@ package fun.club.core.user.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import fun.club.common.base.BaseTimeEntity;
 import fun.club.core.comment.domain.Comment;
+import fun.club.core.post.domain.Board;
 import fun.club.core.post.domain.PostDetails;
 import jakarta.persistence.*;
 import lombok.*;
@@ -50,7 +51,7 @@ public class User extends BaseTimeEntity {
     // 회원탈퇴 -> 작성한 게시글,댓글 모두 삭제
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<PostDetails> postDetails;
+    private List<Board> boards;
 
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;

@@ -5,10 +5,12 @@ package fun.club.secure.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fun.club.common.response.AuthResponse;
 import fun.club.common.util.SuccessResponse;
 import fun.club.core.admin.repository.AdminUserRepository;
+import fun.club.core.user.domain.Role;
 import fun.club.core.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -61,12 +63,13 @@ public class JwtService {
     private final AdminUserRepository adminUserRepository;
 
     // AccessToken 생성 메서드
-    public String createAccessToken(String email) {
+    public String createAccessToken(String email, String role) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(ACCESS_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
                 .withClaim(EMAIL_CLAIM, email)
+                .withClaim("role",role) // 권한 부여를 위함
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
@@ -166,6 +169,20 @@ public class JwtService {
             return false;
         }
     }
+    public Optional<String> extractRole(String accessToken) {
+        try {
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
+                    .build()
+                    .verify(accessToken.trim())
+                    .getClaim("role")
+                    .asString());
+        } catch (Exception e) {
+            log.error("토큰에서 역할을 추출할 수 없습니다.");
+            return Optional.empty();
+        }
+    }
+
+
     /**
      * 토큰 앞에 공백을 없애야 한다.
      */

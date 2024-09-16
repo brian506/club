@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -67,21 +71,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
         // AdminUser 먼저 조회
-        Optional<AdminUser> adminUserOptional = adminUserRepository.findByRefreshToken(refreshToken);
-        if (adminUserOptional.isPresent()) {
-            AdminUser adminUser = adminUserOptional.get();
-            String reIssuedRefreshToken = reIssueRefreshTokenForAdmin(adminUser);
-            jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(adminUser.getEmail()), reIssuedRefreshToken);
-            return;
-        }
-
-        // User 조회
-        Optional<User> userOptional = userRepository.findByRefreshToken(refreshToken);
-        userOptional.ifPresent(user -> {
-            String reIssuedRefreshToken = reIssueRefreshTokenForUser(user);
-            jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()), reIssuedRefreshToken);
-        });
+        adminUserRepository.findByRefreshToken(refreshToken).ifPresentOrElse(
+                adminUser -> {
+                    String reIssuedRefreshToken = reIssueRefreshTokenForAdmin(adminUser);
+                    jwtService.sendAccessAndRefreshToken(
+                            response,
+                            jwtService.createAccessToken(adminUser.getEmail(), String.valueOf(adminUser.getRole())),
+                            reIssuedRefreshToken
+                    );
+                },
+                () -> {
+                    // AdminUser가 없으면 일반 User 조회
+                    userRepository.findByRefreshToken(refreshToken).ifPresent(user -> {
+                        String reIssuedRefreshToken = reIssueRefreshTokenForUser(user);
+                        jwtService.sendAccessAndRefreshToken(
+                                response,
+                                jwtService.createAccessToken(user.getEmail(), String.valueOf(user.getRole())),
+                                reIssuedRefreshToken
+                        );
+                    });
+                }
+        );
     }
+
 
     private String reIssueRefreshTokenForAdmin(AdminUser adminUser) {
         String reIssuedRefreshToken = jwtService.createRefreshToken();
@@ -106,27 +118,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             // AdminUser 조회
                             Optional<AdminUser> adminUserOptional = adminUserRepository.findByEmail(email);
                             if (adminUserOptional.isPresent()) {
-                                saveAuthenticationForAdmin(adminUserOptional.get());
+                                saveAuthenticationForAdmin(adminUserOptional.get(),accessToken);
                             }
 
                             // User 조회 (AdminUser가 없거나 관계없이)
                             Optional<User> userOptional = userRepository.findByEmail(email);
-                            userOptional.ifPresent(this::saveAuthenticationForUser);
+                            userOptional.ifPresent(user -> saveAuthenticationForUser(user,accessToken));
                         }));
 
         filterChain.doFilter(request, response);
     }
 
-    public void saveAuthenticationForAdmin(AdminUser adminUser) {
+    public void saveAuthenticationForAdmin(AdminUser adminUser,String accessToken) {
         String password = adminUser.getPassword();
         if (password == null) {
             password = "defaultAdminPassword"; // AdminUser의 기본 비밀번호 설정 (필요에 따라 변경)
         }
 
+        List<GrantedAuthority> authorities =
+                List.of(new SimpleGrantedAuthority(adminUser.getRole().getValue()));
+
         UserDetails adminUserDetails = org.springframework.security.core.userdetails.User.builder()
                 .username(adminUser.getEmail())
                 .password(password)
-                .roles("ADMIN") // AdminUser의 역할
+                .authorities(authorities)
                 .build();
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
@@ -136,16 +151,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    public void saveAuthenticationForUser(User user) {
+    public void saveAuthenticationForUser(User user,String accessToken) {
         String password = user.getPassword();
         if (password == null) {
             password = "defaultUserPassword"; // User의 기본 비밀번호 설정 (필요에 따라 변경)
         }
 
+        List<GrantedAuthority> authorities =
+                List.of(new SimpleGrantedAuthority(user.getRole().getValue()));
+
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password(password)
-                .roles("USER")
+                .authorities(authorities)
                 .build();
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(

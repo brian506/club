@@ -1,6 +1,7 @@
 package fun.club.secure.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fun.club.secure.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -28,15 +29,17 @@ public class CustomLoginAuthenticationFilter extends AbstractAuthenticationProce
     private static final AntPathRequestMatcher DEFAULT_LOGIN_PATH_REQUEST_MATCHER = new AntPathRequestMatcher(DEFAULT_LOGIN_REQUEST_URL, HTTP_METHOD);
 
     private final ObjectMapper objectMapper;
+    private final JwtService jwtService;
 
 
     /**
      * 부모 클래스인  AbstractAuthenticationProcessingFilter 의 생성자 파라미터로 위에서 선언한 /login URL 을 설정해
      * /login 로 요청이 들어왔을때  해당 필터가 동작함,쉽게 말해 Http 요청과 응답을 가로챈다
      */
-    public CustomLoginAuthenticationFilter(ObjectMapper objectMapper) {
+    public CustomLoginAuthenticationFilter(ObjectMapper objectMapper,JwtService jwtService) {
         super(DEFAULT_LOGIN_PATH_REQUEST_MATCHER);
         this.objectMapper = objectMapper;
+        this.jwtService = jwtService;
     }
 
 
@@ -61,7 +64,20 @@ public class CustomLoginAuthenticationFilter extends AbstractAuthenticationProce
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(email, password);//principal 과 credentials 전달
 
         // attemptAuthentication 메서드에서 인증 처리 객체를 반환하면 LoginService 의 loadUserByUsername 이 동작한다.
-        return this.getAuthenticationManager().authenticate(authRequest);
+        Authentication authentication = this.getAuthenticationManager().authenticate(authRequest);
+        // JWT 생성
+        String accessToken = jwtService.createAccessToken(email, authentication.getAuthorities().stream()
+                .findFirst().orElseThrow().getAuthority());
+        String refreshToken = jwtService.createRefreshToken();
+
+        // Refresh Token 저장 (DB 등)
+        jwtService.updateRefreshToken(email, refreshToken);
+
+        // JWT를 HTTP 응답에 추가
+        response.addHeader("Authorization", "Bearer " + accessToken);
+        response.addHeader("Refresh-Token", refreshToken);
+
+        return authentication; // 인증 성공 시 Authentication 객체 반환
     }
 
 }

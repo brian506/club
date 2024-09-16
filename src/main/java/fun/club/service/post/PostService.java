@@ -3,12 +3,16 @@ package fun.club.service.post;
 
 import fun.club.common.request.PostCreateDto;
 import fun.club.common.request.PostUpdateDto;
+import fun.club.common.response.BoardResponse;
 import fun.club.core.post.domain.Board;
+import fun.club.core.post.domain.FreeBoard;
+import fun.club.core.post.domain.NoticeBoard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 
 public interface PostService  {
@@ -19,9 +23,14 @@ public interface PostService  {
 
     void delete(Long postId);
 
-    Page<Board> findAllByWriter(Pageable pageable, Long writerId);
+    Page<BoardResponse> findAllByWriter(Pageable pageable) throws IOException;
+
+    List<BoardResponse> findByTitle(String title);
+
+
 }
 // 공통된 메서드를 처리할 때 이렇게 인터페이스와 구현체를 구분해서 하면 유지보수에 좋다
+// 컨트롤러에서 쓰임
 
 /**
  * postDetails (게시물 작성) 과 자유게시판,공지게시판을 서로 어떻게 처리할까에 대한 고민을 많이 했다.

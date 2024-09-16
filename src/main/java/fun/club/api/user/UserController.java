@@ -7,6 +7,7 @@ import fun.club.common.response.UserInfoResponse;
 import fun.club.common.util.SuccessResponse;
 import fun.club.core.user.repository.UserRepository;
 import fun.club.secure.service.JwtService;
+import fun.club.secure.service.LoginService;
 import fun.club.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import java.io.IOException;
 public class UserController {
 
     private final UserService userService;
-    private final JwtService jwtService;
+    private final LoginService loginService;
 
 
     // 회원가입
@@ -44,23 +45,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
 
-        // 인증 성공시
-        String accessToken = jwtService.createAccessToken(loginDto.getEmail());
-        log.info("Generated Access Token: {}", accessToken);
-        // Access Token 검증
-        boolean isValid = jwtService.isTokenValid(accessToken);
-        log.info("Is Access Token valid? {}", isValid);
+        AuthResponse authResponse = (AuthResponse) loginService.loadUserByUsername(loginDto.getEmail());
 
-        String refreshToken = jwtService.createRefreshToken();
-
-        // db 에 저장
-        jwtService.updateRefreshToken(loginDto.getEmail(), refreshToken);
-
-        AuthResponse authResponse = new AuthResponse(accessToken, refreshToken);
-
-        SuccessResponse<AuthResponse> response = new SuccessResponse<>(true,"로그인 성공",authResponse);
-
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        SuccessResponse<AuthResponse> response = new SuccessResponse<>(true, "로그인 성공", authResponse);
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
     // 프로필 사진 업로드

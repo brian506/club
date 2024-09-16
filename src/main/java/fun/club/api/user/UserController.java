@@ -51,6 +51,8 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+
+
     // 프로필 사진 업로드
     @PostMapping("/users/{userId}/profile")
     public ResponseEntity<?> uploadProfile(@PathVariable Long userId,

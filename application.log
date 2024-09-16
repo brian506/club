@@ -1451,3 +1451,56 @@ java.lang.NullPointerException: Cannot invoke "fun.club.core.user.domain.Role.ge
 2024-09-16T22:57:24.455+09:00  INFO 11131 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2024-09-16T22:57:24.457+09:00  INFO 11131 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2024-09-16T22:57:24.464+09:00  INFO 11131 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-09-16T23:24:20.818+09:00  INFO 11528 --- [main] fun.club.ClubApplication                 : Starting ClubApplication using Java 17.0.12 with PID 11528 (/Users/brian/Downloads/club/build/classes/java/main started by brian in /Users/brian/Downloads/club)
+2024-09-16T23:24:20.819+09:00  INFO 11528 --- [main] fun.club.ClubApplication                 : No active profile set, falling back to 1 default profile: "default"
+2024-09-16T23:24:21.127+09:00  INFO 11528 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-16T23:24:21.128+09:00  INFO 11528 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2024-09-16T23:24:21.146+09:00  INFO 11528 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface fun.club.core.admin.repository.AdminUserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-16T23:24:21.147+09:00  INFO 11528 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface fun.club.core.post.repository.BoardRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-16T23:24:21.147+09:00  INFO 11528 --- [main] .RepositoryConfigurationExtensionSupport : Spring Data JDBC - Could not safely identify store assignment for repository candidate interface fun.club.core.user.repository.UserRepository; If you want this repository to be a JDBC repository, consider annotating your entities with one of these annotations: org.springframework.data.relational.core.mapping.Table.
+2024-09-16T23:24:21.147+09:00  INFO 11528 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 17 ms. Found 0 JDBC repository interfaces.
+2024-09-16T23:24:21.156+09:00  INFO 11528 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2024-09-16T23:24:21.157+09:00  INFO 11528 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-16T23:24:21.177+09:00  INFO 11528 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18 ms. Found 3 JPA repository interfaces.
+2024-09-16T23:24:21.421+09:00  INFO 11528 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-09-16T23:24:21.426+09:00  INFO 11528 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-09-16T23:24:21.426+09:00  INFO 11528 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-09-16T23:24:21.450+09:00  INFO 11528 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-09-16T23:24:21.450+09:00  INFO 11528 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 614 ms
+2024-09-16T23:24:21.484+09:00  INFO 11528 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-09-16T23:24:21.622+09:00  INFO 11528 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@79e10fb4
+2024-09-16T23:24:21.623+09:00  INFO 11528 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-09-16T23:24:21.666+09:00  INFO 11528 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-16T23:24:21.694+09:00  INFO 11528 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-09-16T23:24:21.710+09:00  INFO 11528 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-09-16T23:24:21.847+09:00  INFO 11528 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-16T23:24:21.885+09:00  WARN 11528 --- [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-09-16T23:24:22.370+09:00  INFO 11528 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-16T23:24:22.426+09:00  INFO 11528 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-16T23:24:22.678+09:00  INFO 11528 --- [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-09-16T23:24:22.910+09:00  WARN 11528 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-09-16T23:24:22.921+09:00  INFO 11528 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name loginService
+2024-09-16T23:24:23.210+09:00  INFO 11528 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-09-16T23:24:23.215+09:00  INFO 11528 --- [main] fun.club.ClubApplication                 : Started ClubApplication in 2.575 seconds (process running for 2.79)
+2024-09-16T23:24:41.168+09:00  INFO 11528 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-09-16T23:24:41.169+09:00  INFO 11528 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-09-16T23:24:41.170+09:00  INFO 11528 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-09-16T23:24:41.298+09:00  INFO 11528 --- [http-nio-8080-exec-1] fun.club.secure.service.LoginService     : Attempting to load user by email: brian50@gmail.com
+2024-09-16T23:24:41.379+09:00  INFO 11528 --- [http-nio-8080-exec-1] fun.club.secure.service.LoginService     : User found: brian50@gmail.com
+2024-09-16T23:24:41.522+09:00  INFO 11528 --- [http-nio-8080-exec-1] fun.club.secure.service.JwtService       : Access Token, Refresh Token 헤더 설정 완료
+2024-09-16T23:24:41.528+09:00  INFO 11528 --- [http-nio-8080-exec-1] f.c.secure.handler.LoginSuccessHandler   : 로그인에 성공하였습니다. 이메일 : brian50@gmail.com
+2024-09-16T23:24:41.529+09:00  INFO 11528 --- [http-nio-8080-exec-1] f.c.secure.handler.LoginSuccessHandler   : 로그인에 성공하였습니다. AccessToken : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBY2Nlc3NUb2tlbiIsInJvbGUiOiJST0xFX1VTRVIiLCJleHAiOjE3MjY1MDAyODEsImVtYWlsIjoiYnJpYW41MEBnbWFpbC5jb20ifQ.cScnzb3G7REdZP7FnPsGPteeskHVpxZdewsX4VH8M-COM7utsBndNq4CNMoyPisJra1iCRx_JsOrlI7w29mlMw
+2024-09-16T23:24:41.529+09:00  INFO 11528 --- [http-nio-8080-exec-1] f.c.secure.handler.LoginSuccessHandler   : 발급된 AccessToken 만료 기간 : 3600000
+2024-09-16T23:28:59.714+09:00  INFO 11528 --- [http-nio-8080-exec-7] f.c.s.filter.JwtAuthenticationFilter     : checkAccessTokenAndAuthentication() 호출
+2024-09-16T23:28:59.715+09:00  INFO 11528 --- [http-nio-8080-exec-7] fun.club.secure.service.JwtService       : 엑세스 토큰에서 리프레시 토큰이 정상적으로 추출되었습니다
+2024-09-16T23:29:36.722+09:00  INFO 11528 --- [http-nio-8080-exec-8] fun.club.secure.service.LoginService     : Attempting to load user by email: brian506@gmail.com
+2024-09-16T23:29:36.727+09:00  INFO 11528 --- [http-nio-8080-exec-8] fun.club.secure.service.LoginService     : AdminUser found: brian506@gmail.com
+2024-09-16T23:29:36.848+09:00  INFO 11528 --- [http-nio-8080-exec-8] fun.club.secure.service.JwtService       : Access Token, Refresh Token 헤더 설정 완료
+2024-09-16T23:29:36.851+09:00  INFO 11528 --- [http-nio-8080-exec-8] f.c.secure.handler.LoginSuccessHandler   : 로그인에 성공하였습니다. 이메일 : brian506@gmail.com
+2024-09-16T23:29:36.851+09:00  INFO 11528 --- [http-nio-8080-exec-8] f.c.secure.handler.LoginSuccessHandler   : 로그인에 성공하였습니다. AccessToken : eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBY2Nlc3NUb2tlbiIsInJvbGUiOiJST0xFX0FETUlOIiwiZXhwIjoxNzI2NTAwNTc2LCJlbWFpbCI6ImJyaWFuNTA2QGdtYWlsLmNvbSJ9.v27Gbiqt8P0RKhsPZn0qUIvEe9v7mqAGXsweGUIK5jUph7h5R8Gu90NRD8Z71o9M2nvQIOsf2_Txvzkaj5NOaA
+2024-09-16T23:29:36.851+09:00  INFO 11528 --- [http-nio-8080-exec-8] f.c.secure.handler.LoginSuccessHandler   : 발급된 AccessToken 만료 기간 : 3600000
+2024-09-16T23:29:54.097+09:00  INFO 11528 --- [http-nio-8080-exec-9] f.c.s.filter.JwtAuthenticationFilter     : checkAccessTokenAndAuthentication() 호출
+2024-09-16T23:29:54.098+09:00  INFO 11528 --- [http-nio-8080-exec-9] fun.club.secure.service.JwtService       : 엑세스 토큰에서 리프레시 토큰이 정상적으로 추출되었습니다
+2024-09-16T23:30:22.039+09:00  INFO 11528 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-09-16T23:30:22.040+09:00  INFO 11528 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-09-16T23:30:22.044+09:00  INFO 11528 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

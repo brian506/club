@@ -39,7 +39,7 @@ public class NoticeBoardController {
     }
 
     @PutMapping("/noticeBoard")
-    @PreAuthorize("hasRole('ADMIN')") // 작성자만 수정 가능
+    @PreAuthorize("isAuthenticated()") // 작성자만 수정 가능
     public ResponseEntity<?> updatePosts(@ModelAttribute @Valid PostUpdateDto dto,
                                          @RequestPart MultipartFile image) throws IOException {
         Long post = noticeBoardService.update(dto, dto.getPostId(), image);

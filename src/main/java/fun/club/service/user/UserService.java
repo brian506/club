@@ -43,7 +43,7 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
-        if (userRepository.count() == 1){
+        if (userRepository.count() == 1){ // 첫 사용자일 때
             user.setRole(Role.ADMIN);
             AdminUser admin = AdminUser.builder()
                     .id(savedUser.getId()) // ID는 새로 생성된 ID를 사용해야 합니다
@@ -56,7 +56,7 @@ public class UserService {
                     .role(Role.ADMIN)
                     .assignedAt(LocalDateTime.now())
                     .build();
-            adminUserRepository.save(admin);
+            adminUserRepository.save(admin); // adminUser 저장
 
         }else user.setRole(Role.USER);
         // 처음 회원가입 한 회원은 ADMIN, 나머진 다 USER
@@ -66,7 +66,7 @@ public class UserService {
 
     // ADMIN 권한 부여
     public void assignAdminRole(Long userId){
-        User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId),"등록되지 않은 회원 ID 입니다");
+        User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId),"존재하지 않는 회원입니다.");
 
 //        user.setRole(Role.ADMIN);
         userRepository.delete(user);
@@ -74,13 +74,13 @@ public class UserService {
         AdminUser admin = AdminUser.builder()
                 .id(user.getId())
                 .username(user.getUsername())
-                .password(passwordEncoder.encode(user.getPassword()))
+                .password((user.getPassword()))
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .profileImageUrl(user.getProfileImageUrl())
+                .assignedAt(LocalDateTime.now())
+                .role(Role.ADMIN)
                 .build();
-
-        admin.setAssignedAt(LocalDateTime.now());
 
         adminUserRepository.save(admin);
         // user 인 회원이 admin 으로 권한 변경되면 adminUser 엔티티에 저장

@@ -29,14 +29,21 @@ public class FreeBoardController {
         return  new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-
     @PutMapping
-    @PreAuthorize("@securityUtil.getLoginUsername() == #postUpdateDto.writerEmail")
+    @PreAuthorize("isAuthenticated()") // 작성자만 수정 가능
     public ResponseEntity<?> updatePosts(@ModelAttribute @Valid PostUpdateDto dto,
                                          @RequestPart MultipartFile image) throws IOException {
         Long post = freeBoardService.update(dto, dto.getPostId(), image);
         SuccessResponse response = new SuccessResponse(true,"게시물 생성 완료",post);
         return  new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{postId}")
+    @PreAuthorize("isAuthenticated()") // 작성자만 수정 가능
+    public ResponseEntity<?>  deletePosts(@PathVariable Long postId){
+        freeBoardService.delete(postId);
+        SuccessResponse response = new SuccessResponse<>(true,"게시물 삭제 완료",postId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

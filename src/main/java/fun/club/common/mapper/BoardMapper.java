@@ -3,6 +3,8 @@ package fun.club.common.mapper;
 import fun.club.common.request.PostCreateDto;
 import fun.club.common.request.PostUpdateDto;
 import fun.club.common.response.BoardResponse;
+import fun.club.common.response.CommentResponse;
+import fun.club.core.comment.domain.Comment;
 import fun.club.core.post.domain.Board;
 import fun.club.core.post.domain.FreeBoard;
 import fun.club.core.post.domain.NoticeBoard;
@@ -42,7 +44,17 @@ public interface BoardMapper {
     @Mapping(target = "title",source = "board.postDetails.title")
     @Mapping(target = "content",source = "board.postDetails.content")
     @Mapping(target = "id",source = "board.id")
+    @Mapping(target = "writer",source = "board.writer")
+    @Mapping(target = "commentResponses",source = "board.comments")
     BoardResponse responseToDto(Board board);
+
+    // Comment 객체를 CommentResponse로 변환하는 메서드
+    CommentResponse commentToResponse(Comment comment);
+    /**
+     * 특정 게시글에 있는 댓글들을 조회하기 위해서는 commentResponse 를 따로 만들어서 원하는 정보만 클라이언트가 받을 수 있게 한다.
+     * BoardResponse 안에 있는 List<CommentResponse> 를 BoardResponse 와 매핑하려면 먼저 Comment 객체를 받아오고
+     * 그다음에 commentResponses 객체를 타게팅해서 매핑해준다.
+     */
 }
 
 

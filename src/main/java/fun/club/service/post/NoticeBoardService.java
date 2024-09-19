@@ -80,8 +80,8 @@ public class NoticeBoardService implements PostService {
 
     // 게시물 조회(pageable) - 사용자가 작성한 게시물들 조회
     @Override
-    public Page<BoardResponse> findAllByWriter(Pageable pageable) {
-        User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()),"존재하지 않는 회원입니다.");
+    public Page<BoardResponse> findAllByWriter(Long userId,Pageable pageable) {
+        User writer = OptionalUtil.getOrElseThrow(userRepository.findById(userId),"존재하지 않는 회원입니다.");
         Page<Board> boards = boardRepository.findAllByWriter(writer,pageable);
         return boards.map(boardMapper::responseToDto);
     }
@@ -90,13 +90,24 @@ public class NoticeBoardService implements PostService {
     @Override
     public List<BoardResponse> findByTitle(String title) {
         List<NoticeBoard> boards = ListUtil.getOrElseThrowList(boardRepository.findByTitleInNoticeBoard(title),"검색 조건에 맞는 게시물이 없습니다.");
-
         return boards.stream()
                 .map(boardMapper::responseToDto)
                 .collect(Collectors.toList());
     }
-}
+
+    // 게시물 전체 조회
+    @Override
+    public Page<BoardResponse> findAllFromBoard(Pageable pageable) {
+        Page<NoticeBoard> boards = boardRepository.findAllNoticeBoardPosts(pageable);
+        return boards.map(boardMapper::responseToDto); // NoticeBoard를 BoardResponse로 변환
+    }
+    }
+
+    // 게시물 전체 조회
+
+
 /**
  * 데이터를 응답해줄때 responseDto 만들어서 반환하는 이유는
  * 필드값들이 많을때 필요한 정보만 클라언트에게 전달하기 위해서임
  */
+

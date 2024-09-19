@@ -35,10 +35,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<FreeBoard> findByTitleInFreeBoard(@Param("title") String title);
 
     @Query("SELECT p FROM Board p WHERE TYPE(p) = FreeBoard ")
-    List<Board> findAllFreeBoardPosts(Pageable pageable);
+    Page<FreeBoard> findAllFreeBoardPosts(Pageable pageable);
 
     @Query("SELECT p FROM Board p WHERE TYPE(p) = NoticeBoard")
-    List<Board> findAllNoticeBoardPosts(Pageable pageable);
+    Page<NoticeBoard> findAllNoticeBoardPosts(Pageable pageable);
 
 
 

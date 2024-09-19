@@ -79,8 +79,8 @@ public class FreeBoardService implements PostService{
 
     // 게시물 조회(pageable) - 사용자가 작성한 게시물들 조회
     @Override
-    public Page<BoardResponse> findAllByWriter(Pageable pageable) {
-        User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()),"존재하지 않는 회원입니다.");
+    public Page<BoardResponse> findAllByWriter(Long userId,Pageable pageable) {
+        User writer = OptionalUtil.getOrElseThrow(userRepository.findById(userId),"존재하지 않는 회원입니다.");
         Page<Board> boards = boardRepository.findAllByWriter(writer,pageable);
         return boards.map(boardMapper::responseToDto);
     }
@@ -95,5 +95,10 @@ public class FreeBoardService implements PostService{
         return boards.stream()
                 .map(boardMapper::responseToDto)
                 .collect(Collectors.toList());
+    }
+    @Override
+    public Page<BoardResponse> findAllFromBoard(Pageable pageable) {
+        Page<FreeBoard> boards = boardRepository.findAllFreeBoardPosts(pageable);
+        return boards.map(boardMapper::responseToDto); // FreeBoard를 BoardResponse로 변환
     }
 }

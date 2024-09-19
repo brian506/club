@@ -7,6 +7,7 @@ import fun.club.common.response.BoardResponse;
 import fun.club.core.post.domain.Board;
 import fun.club.core.post.domain.FreeBoard;
 import fun.club.core.post.domain.NoticeBoard;
+import fun.club.core.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,9 +24,11 @@ public interface PostService  {
 
     void delete(Long postId);
 
-    Page<BoardResponse> findAllByWriter(Pageable pageable) throws IOException;
+    Page<BoardResponse> findAllByWriter(Long userId, Pageable pageable) throws IOException;
 
     List<BoardResponse> findByTitle(String title);
+
+    Page<BoardResponse> findAllFromBoard(Pageable pageable);
 
 
 }

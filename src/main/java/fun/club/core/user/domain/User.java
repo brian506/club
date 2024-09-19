@@ -42,6 +42,7 @@ public class User extends BaseTimeEntity {
     @Setter
     private Role role;
 
+    @Setter
     private int absencePoint; // 불참시 포인트 +1
 
 //    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)

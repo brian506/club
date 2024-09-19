@@ -2,6 +2,7 @@ package fun.club.service.user;
 
 import fun.club.common.mapper.UserMapper;
 import fun.club.common.request.SignupRequestDto;
+import fun.club.common.request.UserUpdateDto;
 import fun.club.common.response.UserInfoResponse;
 import fun.club.common.util.OptionalUtil;
 import fun.club.core.admin.domain.AdminUser;
@@ -96,20 +97,20 @@ public class UserService {
     /**
      * 프로필 사진 업로드
      */
-    public void updateProfile(Long userId, MultipartFile profileImage) throws IOException {
+    public Long updateProfile(UserUpdateDto updateDto,Long userId, MultipartFile profileImage) throws IOException {
 
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId),"존재하지 않는 회원 ID 입니다");
 
+        userMapper.updateEntity(updateDto);
         // 기존 파일 삭제 (있는 경우)
         if (user.getProfileImageUrl() != null) {
             fileService.deleteFile(user.getProfileImageUrl(),true);
         }
-
         // 새 파일 저장
         String fileName = fileService.saveFile(profileImage);
         user.setProfileImageUrl(fileName);
 
-        userRepository.save(user);
+        return user.getId();
     }
     public String getProfileImageUrl(Long userId) {
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId), "존재하지 않는 회원 ID 입니다");

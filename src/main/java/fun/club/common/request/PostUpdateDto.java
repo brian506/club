@@ -8,10 +8,10 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 public class PostUpdateDto {
 
-private Long postId;
+    private Long postId;
 
-@NotBlank
-@Size(min = 1, max = 30)
+    @NotBlank
+    @Size(min = 1, max = 30)
     private String title;
 
     @NotBlank

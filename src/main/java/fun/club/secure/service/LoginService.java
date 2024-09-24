@@ -1,12 +1,15 @@
 package fun.club.secure.service;
 
 
+import fun.club.common.request.LoginDto;
+import fun.club.common.response.AuthResponse;
 import fun.club.core.admin.domain.AdminUser;
 import fun.club.core.admin.repository.AdminUserRepository;
 import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,9 +21,26 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class LoginService implements UserDetailsService {
+    // filter 에서는 로그인한 사용자 정보를 추출하고 loginService 에서는 DB 에 저장된 사용자 정보를 추출해서 서로 비교한다
 
     private final UserRepository userRepository;
     private final AdminUserRepository adminUserRepository;
+    private final JwtService jwtService;
+
+    public AuthResponse login(LoginDto loginDto){
+        UserDetails userDetails = loadUserByUsername(loginDto.getEmail());
+
+        String role = userDetails.getAuthorities().stream()
+                .findFirst()
+                .map(GrantedAuthority::getAuthority)
+                .orElseThrow(() -> new IllegalArgumentException("사용자 역할 정보가 없습니다."));
+
+        String accessToken = jwtService.createAccessToken(userDetails.getUsername(),role);
+        String refreshToken = jwtService.createRefreshToken();
+
+        jwtService.updateRefreshToken(loginDto.getEmail(), refreshToken);
+        return new AuthResponse(accessToken, refreshToken);
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

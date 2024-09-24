@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StreamUtils;
@@ -15,6 +16,7 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CustomLoginAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
     /**
@@ -61,13 +63,17 @@ public class CustomLoginAuthenticationFilter extends AbstractAuthenticationProce
         String password = usernamePasswordMap.get(PASSWORD_KEY);
 
         //인증 처리 대상이 될 UsernamePasswordAuthenticationToken 객체를 email 과 password 로 만든다.
-        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(email, password);//principal 과 credentials 전달
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(email, password);
 
-        // attemptAuthentication 메서드에서 인증 처리 객체를 반환하면 LoginService 의 loadUserByUsername 이 동작한다.
+        // authenticationManager 는 authenticationProvider 에게 인증을 위임하고, 이는 loadUserByUserName 메서드를 호출해 사용자 정보를 로드한다.
+        // DB 에서 사용자 정보를 가져오고 입력된 비밀번호와 저장된 비밀번호를 비교한다
+        // 인증이 성공하면 Authentication 객체가 반환된다.
         Authentication authentication = this.getAuthenticationManager().authenticate(authRequest);
-        // JWT 생성
+
+        // 반환된 사용자 정보의 JWT 생성
         String accessToken = jwtService.createAccessToken(email, authentication.getAuthorities().stream()
-                .findFirst().orElseThrow().getAuthority());
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(",")));
         String refreshToken = jwtService.createRefreshToken();
 
         // Refresh Token 저장 (DB 등)

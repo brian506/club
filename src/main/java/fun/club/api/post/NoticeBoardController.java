@@ -44,10 +44,11 @@ public class NoticeBoardController {
 
     // 게시물 수정
     @PutMapping(NOTICE_BOARDS_UPDATE_POST)
-    @PreAuthorize("isAuthenticated()") // 작성자만 수정 가능
+    @PreAuthorize("isAuthenticated()") // 인증성공한 유저만 가능
     public ResponseEntity<?> updatePosts(@ModelAttribute @Valid PostUpdateDto dto,
+                                         @PathVariable Long boardId,
                                          @RequestPart MultipartFile image) throws IOException {
-        Long post = noticeBoardService.update(dto, dto.getPostId(), image);
+        Long post = noticeBoardService.update(dto,boardId, image);
         SuccessResponse response = new SuccessResponse(true,POST_UPDATE_SUCCESS,post);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -55,16 +56,16 @@ public class NoticeBoardController {
     // 게시물 삭제
     @DeleteMapping(NOTICE_BOARDS_DELETE_POST)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?>  delete(@PathVariable Long postId){
-        noticeBoardService.delete(postId);
-        SuccessResponse response = new SuccessResponse<>(true,POST_DELETE_SUCCESS,postId);
+    public ResponseEntity<?>  delete(@PathVariable Long boardId){
+        noticeBoardService.delete(boardId);
+        SuccessResponse response = new SuccessResponse<>(true,POST_DELETE_SUCCESS,boardId);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     // 사용자 이름으로 게시물 조회
     @GetMapping(NOTICE_BOARDS_FIND_BY_USER)
     public ResponseEntity<?> findAllByWriter(@PathVariable("userId") Long userId,
-        @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+        @PageableDefault(size = 5, direction = Sort.Direction.DESC) Pageable pageable){
         Page<BoardResponse> boards = noticeBoardService.findAllByWriter(userId,pageable);
         SuccessResponse response = new SuccessResponse(true,USER_POSTS_RETRIEVE_SUCCESS,boards);
         return  new ResponseEntity<>(response, HttpStatus.OK);
@@ -80,11 +81,11 @@ public class NoticeBoardController {
 
     // 전체 조회
     @GetMapping(NOTICE_BOARDS_FIND_ALL)
-    public ResponseEntity<?> findAll(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
+    public ResponseEntity<?> findAll(@PageableDefault(size = 5, direction = Sort.Direction.DESC) Pageable pageable){
         Page<BoardResponse> boards = noticeBoardService.findAllFromBoard(pageable);
         SuccessResponse response = new SuccessResponse(true,ALL_POSTS_RETRIEVE_SUCCESS,boards);
         return  new ResponseEntity<>(response, HttpStatus.OK);
-    }
+    } // 이렇게 BoardResponse 에 User 객체를 넣으면 User 에 대한 모든 정보가 나온다. User 의 이름만 나오도록 수정
 }
 /**
  * @RequestPart는 HTTP request body에 multipart/form-data 가 포함되어 있는 경우에 사용하는 어노테이션입니다.

@@ -35,6 +35,9 @@ public abstract class Board extends BaseTimeEntity {
     @OneToMany(mappedBy = "board")
     private List<Comment> comments = new ArrayList<>();
 
+    @Setter
+    private int views;
+
 
 
     /**

@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,15 +48,15 @@ public class UserController {
     // 로그인
     @PostMapping(USERS_LOGIN)
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
-
-        AuthResponse authResponse = (AuthResponse) loginService.loadUserByUsername(loginDto.getEmail());
-
+        AuthResponse authResponse = loginService.login(loginDto);
+        log.info("엑세스 토큰 : " + authResponse.getAccessToken());
         SuccessResponse<AuthResponse> response = new SuccessResponse<>(true, LOGIN_SUCCESS, authResponse);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 회원 정보 수정
     @PatchMapping(USERS_UPDATE_PROFILE)
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> uploadProfile(@ModelAttribute @Valid UserUpdateDto updateDto,
                                                 @PathVariable Long userId,
                                                 @RequestParam("profileImage") MultipartFile profileImage) throws IOException {

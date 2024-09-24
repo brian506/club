@@ -42,8 +42,9 @@ public class FreeBoardController {
     @PutMapping(FREE_BOARDS_UPDATE_POST)
     @PreAuthorize("isAuthenticated()") // 작성자만 수정 가능
     public ResponseEntity<?> updatePosts(@ModelAttribute @Valid PostUpdateDto dto,
+                                         @PathVariable Long boardId,
                                          @RequestPart MultipartFile image) throws IOException {
-        Long post = freeBoardService.update(dto, dto.getPostId(), image);
+        Long post = freeBoardService.update(dto, boardId, image);
         SuccessResponse response = new SuccessResponse(true,POST_UPDATE_SUCCESS,post);
         return  new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -51,9 +52,17 @@ public class FreeBoardController {
     // 게시물 삭제
     @DeleteMapping(FREE_BOARDS_DELETE_POST)
     @PreAuthorize("isAuthenticated()") // 작성자만 수정 가능
-    public ResponseEntity<?>  deletePosts(@PathVariable Long postId){
-        freeBoardService.delete(postId);
-        SuccessResponse response = new SuccessResponse<>(true,POST_DELETE_SUCCESS,postId);
+    public ResponseEntity<?>  deletePosts(@PathVariable Long boardId){
+        freeBoardService.delete(boardId);
+        SuccessResponse response = new SuccessResponse<>(true,POST_DELETE_SUCCESS,boardId);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    // 게시물 단일 조회
+    @GetMapping(FREE_BOARDS_FIND_BY_ID)
+    public ResponseEntity<?> findById(@PathVariable Long boardId){
+        BoardResponse board = freeBoardService.findById(boardId);
+        SuccessResponse response = new SuccessResponse(true,ID_POSTS_RETRIEVE_SUCCESS,board);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 

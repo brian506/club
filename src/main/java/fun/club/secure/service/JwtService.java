@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +66,7 @@ public class JwtService {
                 .withSubject(ACCESS_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
                 .withClaim(EMAIL_CLAIM, email)
-                .withClaim("role",role) // 권한 부여를 위함
+                .withClaim("role", List.of(role)) // 권한 부여를 위함
                 .sign(Algorithm.HMAC512(secretKey));
     }
 

@@ -2,13 +2,13 @@ package fun.club.common.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
 @Getter
+@Builder
 public class PostUpdateDto {
-
-    private Long postId;
 
     @NotBlank
     @Size(min = 1, max = 30)

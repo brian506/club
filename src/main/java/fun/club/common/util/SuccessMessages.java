@@ -6,6 +6,7 @@ public class SuccessMessages {
         public static final String POST_CREATE_SUCCESS = "게시물 생성 완료";
         public static final String POST_UPDATE_SUCCESS = "게시물 수정 완료";
         public static final String POST_DELETE_SUCCESS = "게시물 삭제 완료";
+        public static final String ID_POSTS_RETRIEVE_SUCCESS = "게시물 조회 완료";
         public static final String USER_POSTS_RETRIEVE_SUCCESS = "사용자의 게시물 조회 완료";
         public static final String TITLE_POSTS_RETRIEVE_SUCCESS = "제목 조회 완료";
         public static final String ALL_POSTS_RETRIEVE_SUCCESS = "게시물 전체 조회 완료";

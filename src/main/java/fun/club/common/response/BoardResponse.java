@@ -13,7 +13,7 @@ public class BoardResponse {
     private Long id;
     private String title;
     private String content;
-    private User writer;
+    private String writer;
     private List<CommentResponse> commentResponses;
 
 }

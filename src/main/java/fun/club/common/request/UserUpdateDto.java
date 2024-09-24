@@ -6,10 +6,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
 public class UserUpdateDto {
+
     @NotBlank(message = "필수 항목입니다")
     private String username;
 
@@ -27,4 +29,6 @@ public class UserUpdateDto {
 
     @NotNull(message = "본인의 MBTI를 작성하세요")
     private String personality;
+
+    private MultipartFile profileImage;
 }

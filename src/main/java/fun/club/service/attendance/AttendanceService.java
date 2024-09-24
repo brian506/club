@@ -5,6 +5,7 @@ import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

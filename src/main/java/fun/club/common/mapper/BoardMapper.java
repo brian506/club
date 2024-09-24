@@ -44,7 +44,7 @@ public interface BoardMapper {
     @Mapping(target = "title",source = "board.postDetails.title")
     @Mapping(target = "content",source = "board.postDetails.content")
     @Mapping(target = "id",source = "board.id")
-    @Mapping(target = "writer",source = "board.writer")
+    @Mapping(target = "writer",source = "board.writer.username")
     @Mapping(target = "commentResponses",source = "board.comments")
     BoardResponse responseToDto(Board board);
 

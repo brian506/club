@@ -47,7 +47,7 @@ public class User extends BaseTimeEntity {
 
 //    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
 //    @JsonManagedReference
-//    private AdminUser admin;
+//    private AdminUser admin; // User 의 정보를 가져오기 위함이라면 굳이 매핑을 하지 않고 빌더를 통해서 해당 엔티티에서 필요한 필드값들을 불러와서 쓸 수 있다.
 
     // 회원탈퇴 -> 작성한 게시글,댓글 모두 삭제
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)

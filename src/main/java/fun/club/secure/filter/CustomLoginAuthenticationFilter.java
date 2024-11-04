@@ -70,18 +70,18 @@ public class CustomLoginAuthenticationFilter extends AbstractAuthenticationProce
         // 인증이 성공하면 Authentication 객체가 반환된다.
         Authentication authentication = this.getAuthenticationManager().authenticate(authRequest);
 
-        // 반환된 사용자 정보의 JWT 생성
-        String accessToken = jwtService.createAccessToken(email, authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(",")));
-        String refreshToken = jwtService.createRefreshToken();
-
-        // Refresh Token 저장 (DB 등)
-        jwtService.updateRefreshToken(email, refreshToken);
-
-        // JWT를 HTTP 응답에 추가
-        response.addHeader("Authorization", "Bearer " + accessToken);
-        response.addHeader("Refresh-Token", refreshToken);
+//        // 반환된 사용자 정보의 JWT 생성
+//        String accessToken = jwtService.createAccessToken(email, authentication.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.joining(",")));
+//        String refreshToken = jwtService.createRefreshToken();
+//
+//        // Refresh Token 저장 (DB 등)
+//        jwtService.updateRefreshToken(email, refreshToken);
+//
+//        // JWT를 HTTP 응답에 추가
+//        response.addHeader("Authorization", "Bearer " + accessToken);
+//        response.addHeader("Refresh-Token", refreshToken);
 
         return authentication; // 인증 성공 시 Authentication 객체 반환
     }

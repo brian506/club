@@ -12,6 +12,7 @@ import fun.club.core.post.domain.FreeBoard;
 import fun.club.core.post.repository.BoardRepository;
 import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
+import fun.club.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,7 @@ public class FreeBoardService implements PostService{
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final BoardMapper boardMapper;
+    private final FileService fileService;
 
     // 게시물 작성
     @Override
@@ -39,10 +41,10 @@ public class FreeBoardService implements PostService{
 
         User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()),"존재하지 않는 회원입니다.");
 
-        FreeBoard freeBoard = boardMapper.freeBoardFromDto(postCreateDto,writer);
+        FreeBoard freeBoard = boardMapper.freeBoardFromDto(postCreateDto,writer);// 이것을 builder로?
 
         if (image != null && !image.isEmpty()) {
-            String fileName = image.getOriginalFilename();
+            String fileName = fileService.savePostFile(image);
             freeBoard.getPostDetails().setFile(fileName);
         }
 
@@ -55,9 +57,7 @@ public class FreeBoardService implements PostService{
 
         FreeBoard freeBoard = (FreeBoard) OptionalUtil.getOrElseThrow(boardRepository.findById(postId),"존재하지 않는 게시물입니다.");
 
-        User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()),"존재하지 않는 회원입니다.");
-        if (!freeBoard.getWriter().getId().equals(writer.getId())) {
-          }// 컨트롤러에서 @preAuthorize 이용
+       // User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()),"존재하지 않는 회원입니다.");
 
         boardMapper.updateBoardFromDto(postUpdateDto,freeBoard);// set 을 이용하지 않고 mapper 를 이용해서 엔티티를 업데이트한다.
 

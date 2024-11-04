@@ -13,6 +13,7 @@ import fun.club.core.post.domain.NoticeBoard;
 import fun.club.core.post.repository.BoardRepository;
 import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
+import fun.club.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,7 @@ public class NoticeBoardService implements PostService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final BoardMapper boardMapper;
+    private final FileService fileService;
 
     // 게시물 작성
     @Override
@@ -45,7 +47,7 @@ public class NoticeBoardService implements PostService {
         NoticeBoard noticeBoard = boardMapper.noticeBoardFromDto(postCreateDto,writer);
 
         if (image != null && !image.isEmpty()) {
-            String fileName = image.getOriginalFilename();
+            String fileName = fileService.savePostFile(image);
             noticeBoard.getPostDetails().setFile(fileName);
         }
 

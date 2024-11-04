@@ -49,7 +49,7 @@ public class UserController {
     @PostMapping(USERS_LOGIN)
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
         AuthResponse authResponse = loginService.login(loginDto);
-        log.info("엑세스 토큰 : " + authResponse.getAccessToken());
+        log.info("AccessToken : " + authResponse.getAccessToken());
         SuccessResponse<AuthResponse> response = new SuccessResponse<>(true, LOGIN_SUCCESS, authResponse);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -60,7 +60,7 @@ public class UserController {
     public ResponseEntity<?> uploadProfile(@ModelAttribute @Valid UserUpdateDto updateDto,
                                                 @PathVariable Long userId,
                                                 @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
-        Long user =  userService.updateProfile(updateDto,userId, profileImage);
+        Long user = userService.updateProfile(updateDto,userId, profileImage);
         SuccessResponse response = new SuccessResponse<>(true,PROFILE_UPDATE_SUCCESS,user);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }

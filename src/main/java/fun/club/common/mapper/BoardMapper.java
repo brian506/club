@@ -9,9 +9,8 @@ import fun.club.core.post.domain.Board;
 import fun.club.core.post.domain.FreeBoard;
 import fun.club.core.post.domain.NoticeBoard;
 import fun.club.core.user.domain.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
@@ -19,27 +18,22 @@ public interface BoardMapper {
 
     BoardMapper INSTANCE = Mappers.getMapper(BoardMapper.class);
 
-
-    @Mapping(target = "writer", expression = "java(writer)")
+    @Mapping(target = "writer",source = "writer")
     @Mapping(target = "postDetails.title", source = "postCreateDto.title")
     @Mapping(target = "postDetails.content", source = "postCreateDto.content")
-    FreeBoard freeBoardFromDto(PostCreateDto postCreateDto, User writer);
+    FreeBoard freeBoardFromDto(PostCreateDto postCreateDto,User writer);
     // dto 에서의 값을 postDetails 의 값에 매핑 시키는 것(값을 옮기는 느낌)
 
-
-    @Mapping(target = "writer", expression = "java(writer)")
+    @Mapping(target = "writer",source = "writer")
     @Mapping(target = "postDetails.title", source = "postCreateDto.title")
     @Mapping(target = "postDetails.content", source = "postCreateDto.content")
-    NoticeBoard noticeBoardFromDto(PostCreateDto postCreateDto, User writer);
+    NoticeBoard noticeBoardFromDto(PostCreateDto postCreateDto,User writer);
 
-    @Mapping(target = "postDetails.title", source = "postUpdateDto.title")
-    @Mapping(target = "postDetails.content", source = "postUpdateDto.content")
-    void updateBoardFromDto(PostUpdateDto postUpdateDto, @MappingTarget Board board);
 
-    @Mapping(target = "postDetails.title", source = "postUpdateDto.title")
-    @Mapping(target = "postDetails.content", source = "postUpdateDto.content")
+    void updateBoardFromDto(PostUpdateDto postUpdateDto, @MappingTarget NoticeBoard noticeBoard);
+
+
     void updateBoardFromDto(PostUpdateDto postUpdateDto, @MappingTarget FreeBoard freeBoard);
-
 
     @Mapping(target = "title",source = "board.postDetails.title")
     @Mapping(target = "content",source = "board.postDetails.content")
@@ -47,6 +41,7 @@ public interface BoardMapper {
     @Mapping(target = "writer",source = "board.writer.username")
     @Mapping(target = "commentResponses",source = "board.comments")
     BoardResponse responseToDto(Board board);
+
 
     // Comment 객체를 CommentResponse로 변환하는 메서드
     CommentResponse commentToResponse(Comment comment);
@@ -69,5 +64,9 @@ public interface BoardMapper {
 /**
   @MappingTarget 은 이미 존재하는 객체에 매핑할 때 사용
  기본적으로 mapstruct 는 새로운 객체를 생성하지만, 위 어노테이션은 기존 객체의 필드값만 변경 가능
- *
+ */
+
+/**
+ * source : 매핑이 될 객체. getter 필요
+ * target : 매핑할 객체, 생성자와 setter 필요
  */

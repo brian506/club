@@ -17,3 +17,7 @@ public class UserProfileRequestDto {
     private String profileImageUrl;
 
 }
+/**
+ * 사용자가 조회할 때는 첨부파일을 String 타입으로 요청하고
+ * 사용자가 생성하거나 수정할 때는 첨부파일을 MultipartFile 로 불러온다.
+ */

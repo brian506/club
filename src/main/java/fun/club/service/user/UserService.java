@@ -86,6 +86,7 @@ public class UserService {
         adminUserRepository.save(admin);
         // user 인 회원이 admin 으로 권한 변경되면 adminUser 엔티티에 저장
     }
+    // db 에 대한 작업많 하기 때문에 반환값이 필요없으므로 void
 
     /**
      * 비밀번호 인코딩(암호화)
@@ -126,7 +127,7 @@ public class UserService {
     public UserInfoResponse findById(Long id) {
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(id),"존재하지 않는 회원 ID 입니다.");
         return userMapper.toDto(user);
-    }
+    } // UserInfoResponse 형태로 사용자에게 다시 응답하기 위해서 반환값을 UserInfoResponse 로 함
 
     // 이름으로 회원 조회
     public UserInfoResponse findByUsername(String username) {

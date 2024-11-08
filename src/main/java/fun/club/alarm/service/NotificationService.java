@@ -7,6 +7,7 @@ import fun.club.alarm.repository.EmitterRepository;
 import fun.club.alarm.repository.NotificationRepository;
 import fun.club.common.response.NotifyResponseDto;
 import fun.club.core.user.domain.User;
+import fun.club.core.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -25,7 +27,7 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final EmitterRepository emitterRepository;
-
+    private final UserRepository userRepository;
 
 
     /**
@@ -75,6 +77,7 @@ public class NotificationService {
             );
         }catch (IOException e){
             emitterRepository.deleteById(emitterId);
+            throw new RuntimeException("연결 오류");
         }
     }
 
@@ -101,6 +104,8 @@ public class NotificationService {
      * 모든 수신자에게 알림 전송 위해 모든 SseEmitter 를 가져와 알림 전송, 이벤트 캐시 저장
      *
      * => 알림을 생성하고 알림을 수신하는 모든 클라이언트에게 전송
+     *
+     * send() 는 특정 사용자에게 개별적으로 보낼 때 필요한 메서드
      */
     public void send(User receiver, NotificationType notificationType,String content,String url){
         Notification notification = notificationRepository.save(createNotification(receiver,notificationType,content,url));
@@ -117,6 +122,14 @@ public class NotificationService {
                     sendNotification(emitter,eventId,key, NotifyResponseDto.toNotifyDto(notification));
                 }
         );
+    }
+
+    /**
+     *  모든 사용자에게 보내기 위한 메서드임
+     */
+    public void sendToAll(NotificationType notificationType,String content,String url){
+        List<User> users = userRepository.findAll();
+        users.forEach(user -> send(user,notificationType,content,url));
     }
 
     // 매개변수로 받은 정보들을 포함한 알림 객체를 모아둔 메서드

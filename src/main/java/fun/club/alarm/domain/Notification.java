@@ -39,6 +39,4 @@ public class Notification extends BaseTimeEntity {
     private User receiver;
 
 
-
-
 }

@@ -1,7 +1,6 @@
-# -- freeboard 테이블에 필요한 모든 필드에 대해 값을 지정합니다.
-# INSERT INTO free_board (id, free_board_id) VALUES (1, 1)
-# ON DUPLICATE KEY UPDATE id=id;
-#
-# -- noticeboard 테이블에 필요한 모든 필드에 대해 값을 지정합니다.
-# INSERT INTO notice_board (id, notice_board_id) VALUES (1, 1)
-# ON DUPLICATE KEY UPDATE id=id;
+INSERT INTO User (username, email, password, phone_Number, birth, personality, profile_Image_Url, role, absence_Point, refresh_Token)
+VALUES
+    ('johndoe', 'johndoe@example.com', 'encoded_password', 1234567890, '1990-01-01', 'INTJ', 'http://example.com/profile.jpg', 'USER', 0, 'some_refresh_token');
+
+
+

@@ -6,5 +6,5 @@ import lombok.Getter;
 @Getter
 
 public enum NotificationType {
-    ALARM,CHAT
+    ALARM,CHAT,ATTENDANCE
 }

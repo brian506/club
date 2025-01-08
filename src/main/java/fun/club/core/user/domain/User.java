@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class User extends BaseTimeEntity {
@@ -29,7 +29,7 @@ public class User extends BaseTimeEntity {
 
     private String password;
 
-    private int phoneNumber;
+    private String phoneNumber;
 
     private String birth;
 

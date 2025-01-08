@@ -8,7 +8,8 @@ public class ApiPostUrlConstants {
     public static final String USERS_BASE_URL = BASE_API_URL + "/users";
     public static final String USERS_SIGN_UP = BASE_API_URL + "/sign-up";
     public static final String USERS_LOGIN = BASE_API_URL + "/login";
-    public static final String USERS_UPDATE_PROFILE = USERS_BASE_URL + "/{userId}/profile";
+    public static final String USERS_UPDATE_PROFILE = USERS_BASE_URL + "/profile";
+    public static final String USERS_UPDATE_IMAGE = USERS_BASE_URL + "/{userId}/image";
     public static final String USERS_FIND_BY_ID = USERS_BASE_URL + "/{userId}";
     public static final String USERS_FIND_BY_USERNAME = USERS_BASE_URL + "/usernames";
     public static final String USERS_FIND_LOGIN_USER = USERS_BASE_URL + "/userInfo";

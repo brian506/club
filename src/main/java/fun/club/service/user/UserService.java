@@ -5,6 +5,7 @@ import fun.club.common.request.SignupRequestDto;
 import fun.club.common.request.UserUpdateDto;
 import fun.club.common.response.UserInfoResponse;
 import fun.club.common.util.OptionalUtil;
+import fun.club.common.util.SecurityUtil;
 import fun.club.core.admin.domain.AdminUser;
 import fun.club.core.admin.repository.AdminUserRepository;
 import fun.club.core.user.domain.Role;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
@@ -98,11 +98,9 @@ public class UserService {
     /**
      * 프로필 사진 업로드
      */
-    public Long updateProfile(UserUpdateDto updateDto,Long userId, MultipartFile profileImage) throws IOException {
-
+    @Transactional
+    public void uploadImage(Long userId,MultipartFile profileImage) throws IOException {
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId),"존재하지 않는 회원 ID 입니다");
-
-        userMapper.updateEntity(updateDto);
         // 기존 파일 삭제 (있는 경우)
         if (user.getProfileImageUrl() != null) {
             fileService.deleteFile(user.getProfileImageUrl(),true);
@@ -110,8 +108,22 @@ public class UserService {
         // 새 파일 저장
         String fileName = fileService.saveFile(profileImage);
         user.setProfileImageUrl(fileName);
+    }
 
-        return user.getId();
+    /**
+     * 회원정보수정
+     */
+    @Transactional
+    public void updateProfile(UserUpdateDto updateDto) throws IOException {
+        String currentUserEmail = SecurityUtil.getLoginUsername();
+        User user = OptionalUtil.getOrElseThrow(userRepository.findByEmail(currentUserEmail),"존재하지 않는 회원 ID 입니다");
+        System.out.println("Before Mapping: " + user);
+
+        userMapper.fixEntity(updateDto, user);
+
+        // After mapping
+        System.out.println("After Mapping: " + user);
+        userRepository.save(user);
     }
     public String getProfileImageUrl(Long userId) {
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId), "존재하지 않는 회원 ID 입니다");

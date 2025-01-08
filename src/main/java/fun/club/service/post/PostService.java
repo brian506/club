@@ -28,7 +28,8 @@ public interface PostService  {
 
     List<BoardResponse> findByTitle(String title);
 
-    Page<BoardResponse> findAllFromBoard(Pageable pageable);
+    Page<BoardResponse> findAllFromBoard(int pageNo, int pageSize, String criteria);
+
 
 
 }

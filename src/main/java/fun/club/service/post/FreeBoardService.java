@@ -15,7 +15,9 @@ import fun.club.core.user.repository.UserRepository;
 import fun.club.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -105,7 +107,8 @@ public class FreeBoardService implements PostService{
     }
 
     @Override
-    public Page<BoardResponse> findAllFromBoard(Pageable pageable) {
+    public Page<BoardResponse> findAllFromBoard(int pageNo, int pageSize, String criteria) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, criteria));
         Page<FreeBoard> boards = boardRepository.findAllFreeBoardPosts(pageable);
         return boards.map(boardMapper::responseToDto); // FreeBoard를 BoardResponse로 변환
     }

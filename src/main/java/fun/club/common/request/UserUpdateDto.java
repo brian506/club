@@ -20,7 +20,7 @@ public class UserUpdateDto {
     private String email;
 
     @NotBlank(message = "'-' 붙이지 않고 8자리로 입력하세요")
-    @Length(min = 8,max = 8)
+    @Length(min = 11,max = 11)
     private String phoneNumber;
 
     @NotBlank
@@ -30,5 +30,4 @@ public class UserUpdateDto {
     @NotNull(message = "본인의 MBTI를 작성하세요")
     private String personality;
 
-    private MultipartFile profileImage;
 }

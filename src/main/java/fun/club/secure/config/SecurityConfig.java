@@ -119,3 +119,8 @@ public class SecurityConfig {
 
 }
 
+/**
+ * @Bean 을 사용하는 이유
+ * spring security 에서 필터는 spring IoC 에 의해 관리 되지 않으므로 직접 Bean 으로 등록하여 시큐리티 설정에 통합해야 한다.
+ * Bean 으로 등록하면 해당 객체는 싱글톤으로 관리되며 매 요청마다 새로운 객체를 생성할 필요가 없고 필요할 때 주입받아 재사용 가능
+ */

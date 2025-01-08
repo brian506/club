@@ -85,10 +85,13 @@ public class FreeBoardController {
 
     // 게시물 전체 조회
     @GetMapping(FREE_BOARDS_FIND_ALL)
-    public ResponseEntity<?> findAll(@PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
-        Page<BoardResponse> boards = freeBoardService.findAllFromBoard(pageable);
-        SuccessResponse response = new SuccessResponse(true,ALL_POSTS_RETRIEVE_SUCCESS,boards);
-        return  new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<?> findAll(
+            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+            @RequestParam(required = false, defaultValue = "5", value = "size") int pageSize,
+            @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria) {
+        Page<BoardResponse> boards = freeBoardService.findAllFromBoard(pageNo,pageSize,criteria);
+        SuccessResponse response = new SuccessResponse(true, ALL_POSTS_RETRIEVE_SUCCESS, boards);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

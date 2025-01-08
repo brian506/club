@@ -31,8 +31,6 @@ public interface BoardMapper {
 
 
     void updateBoardFromDto(PostUpdateDto postUpdateDto, @MappingTarget NoticeBoard noticeBoard);
-
-
     void updateBoardFromDto(PostUpdateDto postUpdateDto, @MappingTarget FreeBoard freeBoard);
 
     @Mapping(target = "title",source = "board.postDetails.title")

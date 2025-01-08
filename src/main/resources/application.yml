@@ -25,6 +25,7 @@ spring:
     defer-datasource-initialization: false
     properties:
       hibernate:
+        open-in-view : true
         show_sql: true
         format_sql: true
     hibernate:

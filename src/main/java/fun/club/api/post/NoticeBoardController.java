@@ -70,6 +70,7 @@ public class NoticeBoardController {
         SuccessResponse response = new SuccessResponse(true,USER_POSTS_RETRIEVE_SUCCESS,boards);
         return  new ResponseEntity<>(response, HttpStatus.OK);
     } // 5개씩 내림차순으로 정렬
+    // 이렇게 BoardResponse 에 User 객체를 넣으면 User 에 대한 모든 정보가 나온다. User 의 이름만 나오도록 수정
 
     // 제목으로 게시물 조회
     @GetMapping(NOTICE_BOARDS_FIND_BY_TITLE)
@@ -81,11 +82,14 @@ public class NoticeBoardController {
 
     // 전체 조회
     @GetMapping(NOTICE_BOARDS_FIND_ALL)
-    public ResponseEntity<?> findAll(@PageableDefault(size = 5, direction = Sort.Direction.DESC) Pageable pageable){
-        Page<BoardResponse> boards = noticeBoardService.findAllFromBoard(pageable);
-        SuccessResponse response = new SuccessResponse(true,ALL_POSTS_RETRIEVE_SUCCESS,boards);
-        return  new ResponseEntity<>(response, HttpStatus.OK);
-    } // 이렇게 BoardResponse 에 User 객체를 넣으면 User 에 대한 모든 정보가 나온다. User 의 이름만 나오도록 수정
+    public ResponseEntity<?> findAll(
+            @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+            @RequestParam(required = false, defaultValue = "5", value = "size") int pageSize,
+            @RequestParam(required = false, defaultValue = "createdAt", value = "criteria") String criteria) {
+        Page<BoardResponse> boards = noticeBoardService.findAllFromBoard(pageNo,pageSize,criteria);
+        SuccessResponse response = new SuccessResponse(true, ALL_POSTS_RETRIEVE_SUCCESS, boards);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }
 /**
  * @RequestPart는 HTTP request body에 multipart/form-data 가 포함되어 있는 경우에 사용하는 어노테이션입니다.
@@ -93,4 +97,14 @@ public class NoticeBoardController {
  * 만약 MultipartFile이 포함되어있지 않다면, @RequestBody와 마찬가지로 동작하게 됩니다.
  *
  * @PreAuthorize("isAuthenticated()") : 로그인한 사용자(권한 인증 받은)만 수행가능
+ */
+
+/**
+ * ResponseEntity<?> 응답 객체
+ * 상태 코드,헤더 정보 포함
+ * -> RESTful API 표준을 따르는 경우, 상태 코드에 따라 응답을 다르게 처리하는 경우
+ *
+ * SuccessResponseDto 응답 객체
+ * 클라이언트가 일관된 형식의 데이터(JSON)만을 기대하는 경우
+ *
  */

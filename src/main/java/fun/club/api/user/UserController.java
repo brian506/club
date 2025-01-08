@@ -55,15 +55,25 @@ public class UserController {
     }
 
     // 회원 정보 수정
+    /**
+     * required = false 는 multipartFile 이 필수가 아님을 명시해주는 것임
+     */
     @PatchMapping(USERS_UPDATE_PROFILE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> uploadProfile(@ModelAttribute @Valid UserUpdateDto updateDto,
-                                                @PathVariable Long userId,
-                                                @RequestParam("profileImage") MultipartFile profileImage) throws IOException {
-        Long user = userService.updateProfile(updateDto,userId, profileImage);
-        SuccessResponse response = new SuccessResponse<>(true,PROFILE_UPDATE_SUCCESS,user);
+    public ResponseEntity<?> updateProfile(@ModelAttribute @Valid UserUpdateDto updateDto) throws IOException {
+        userService.updateProfile(updateDto);
+        SuccessResponse response = new SuccessResponse<>(true,PROFILE_UPDATE_SUCCESS,updateDto);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+    // 회원 이미지 수정
+    @PutMapping( USERS_UPDATE_IMAGE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> updateImage(@PathVariable Long userId,@RequestParam(value = "profileImage",required = false) MultipartFile profileImage) throws IOException {
+        userService.uploadImage(userId,profileImage);
+        SuccessResponse response = new SuccessResponse<>(true,PROFILE_UPDATE_SUCCESS,userId);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
 
     // 본인 프로필 조회
     @GetMapping(USERS_FIND_BY_ID)

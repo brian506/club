@@ -8,7 +8,6 @@ import fun.club.common.util.ListUtil;
 import fun.club.common.util.OptionalUtil;
 import fun.club.common.util.SecurityUtil;
 import fun.club.core.post.domain.Board;
-import fun.club.core.post.domain.FreeBoard;
 import fun.club.core.post.domain.NoticeBoard;
 import fun.club.core.post.repository.BoardRepository;
 import fun.club.core.user.domain.User;
@@ -16,7 +15,9 @@ import fun.club.core.user.repository.UserRepository;
 import fun.club.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,7 +101,8 @@ public class NoticeBoardService implements PostService {
 
     // 게시물 전체 조회
     @Override
-    public Page<BoardResponse> findAllFromBoard(Pageable pageable) {
+    public Page<BoardResponse> findAllFromBoard(int pageNo, int pageSize, String criteria) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, criteria));
         Page<NoticeBoard> boards = boardRepository.findAllNoticeBoardPosts(pageable);
         return boards.map(boardMapper::responseToDto); // NoticeBoard를 BoardResponse로 변환
     }

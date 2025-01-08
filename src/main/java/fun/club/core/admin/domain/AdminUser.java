@@ -28,7 +28,7 @@ public class AdminUser extends BaseTimeEntity {
 
     private String email;
 
-    private int phoneNumber;
+    private String phoneNumber;
 
     private String profileImageUrl;
 

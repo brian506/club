@@ -17,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,25 +67,23 @@ public class UserControllerTest {
                 .phoneNumber("01020504471")
                 .birth("20000506")
                 .personality("CUTE")
-                .profileImageUrl("oldImage.jpg")
                 .build());
 
-        // 테스트 환경에서 파일 업로드를 모방하기 위한 file 객체
-        MockMultipartFile mockFile = new MockMultipartFile(
-                "profileImage", // 요청에서 받을 필드 이름
-                "newImage.jpg", // 파일 이름
-                "image/jpeg", // 파일 타입
-                new byte[]{1,2,3,4} // 파일 내용
-        );
-
-        when(fileService.saveFile(any(MultipartFile.class))).thenReturn("newImage.jpg");
-        doNothing().when(fileService).deleteFile(eq("oldImage.jpg"),eq(true));
+//        // 테스트 환경에서 파일 업로드를 모방하기 위한 file 객체
+//        MockMultipartFile mockFile = new MockMultipartFile(
+//                "profileImage", // 요청에서 받을 필드 이름
+//                "newImage.jpg", // 파일 이름
+//                "image/jpeg", // 파일 타입
+//                new byte[]{1,2,3,4} // 파일 내용
+//        );
+//
+//        when(fileService.saveFile(any(MultipartFile.class))).thenReturn("newImage.jpg");
+//        doNothing().when(fileService).deleteFile(eq("oldImage.jpg"),eq(true));
 
         String token = "Bearer " + jwtService.createAccessToken(user.getEmail(), String.valueOf(user.getRole()));
 
         //when
-        mockMvc.perform(multipart("/v1/api/users/" +user.getId()+ "/profile") // API 경로
-                        .file(mockFile) // 파일 업로드
+         mockMvc.perform(multipart("/v1/api/users/profile") // API 경fh
                         .param("username", "최영민")
                         .param("email", "br@naver.com")
                         .param("phoneNumber", "01098765432")
@@ -99,22 +98,15 @@ public class UserControllerTest {
                 .andExpect(status().isOk()) // 응답 코드 확인
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.message").value("회원 정보 수정 성공"))
-                .andExpect(jsonPath("$.data").value(user.getId()));
+                .andExpect(jsonPath("$.data.email").value("br@naver.com"));
 
         //then : DB 상태 확인
-        User updatedUser = userRepository.findById(user.getId())
+        User updatedUser = userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없음"));
 
         assertEquals("br@naver.com", updatedUser.getEmail());
         assertEquals("01098765432", updatedUser.getPhoneNumber());
-        assertEquals("newImage.jpg", updatedUser.getProfileImageUrl());
-
-
-
-
-
-
-
+        assertEquals("19900506", updatedUser.getBirth());
     }
 }
 /**

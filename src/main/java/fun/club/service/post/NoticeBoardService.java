@@ -41,14 +41,15 @@ public class NoticeBoardService implements PostService {
 
     // 게시물 작성
     @Override
-    public Long create(PostCreateDto postCreateDto, MultipartFile image) throws IOException {
+    public Long create(PostCreateDto postCreateDto) throws IOException {
 
         User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()),"존재하지 않는 회원입니다.");
 
         NoticeBoard noticeBoard = boardMapper.noticeBoardFromDto(postCreateDto,writer);
+        MultipartFile file = postCreateDto.getImage();
 
-        if (image != null && !image.isEmpty()) {
-            String fileName = fileService.savePostFile(image);
+        if (file != null && !file.isEmpty()) {
+            String fileName = fileService.savePostFile(file);
             noticeBoard.getPostDetails().setFile(fileName);
         }
 
@@ -57,23 +58,23 @@ public class NoticeBoardService implements PostService {
 
     //게시물 수정
     @Override
-    public Long update(PostUpdateDto postUpdateDto, Long boardId, MultipartFile image) throws IOException {
-        NoticeBoard noticeBoard = (NoticeBoard) OptionalUtil.getOrElseThrow(boardRepository.findById(boardId),"존재하지 않는 게시물입니다.");
+    public Long update(PostUpdateDto postUpdateDto, Long boardId) throws IOException {
+        NoticeBoard noticeBoard = (NoticeBoard) OptionalUtil.getOrElseThrow(
+                boardRepository.findById(boardId),"존재하지 않는 게시물입니다.");
 
-        User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()),"존재하지 않는 회원입니다.");
-        if (!noticeBoard.getWriter().getId().equals(writer.getId())) {
-            throw new AccessDeniedException("해당 게시물에 접근할 수 없습니다.");
-        }
-
-        boardMapper.updateBoardFromDto(postUpdateDto,noticeBoard);// set 을 이용하지 않고 mapper 를 이용해서 엔티티를 업데이트한다.
-
-        if (image != null && !image.isEmpty()) {
-            String fileName = image.getOriginalFilename();
+        // 연관관계 메서드로 update 기능 수행
+        noticeBoard.update(
+                postUpdateDto.getTitle(),
+                postUpdateDto.getContent(),
+                null
+        );
+        MultipartFile file = postUpdateDto.getFile();
+        if (file != null && !file.isEmpty()) {
+            String fileName = file.getOriginalFilename();
             noticeBoard.getPostDetails().setFile(fileName);// dto 관련된 것들만 주로 mapper 를 이용하는 편이 좋다. 이미지 파일의 존재 유무에 대한 것이므로 그냥 setter 로 설정
         }
-
-        return noticeBoard.getId(); // 게시물을 수정할 때는 repository 에 저장하지 않아도 새로운 값으로 저장된다. 처음에 create 할 때는 리포지토리 필요
-    }
+        return noticeBoard.getId(); // dirty checking
+    } // 파라미터로 file 을 받지 않고 dto 에 있는 값을 써준다
 
     // 게시물 삭제
     @Override

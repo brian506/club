@@ -32,9 +32,8 @@ public class FreeBoardController {
 
     // 게시물 작성
     @PostMapping(FREE_BOARDS_ADD_POST)
-    public ResponseEntity<?> addPosts(@ModelAttribute @Valid PostCreateDto dto,
-                                      @RequestPart MultipartFile image) throws IOException {
-        Long post = freeBoardService.create(dto,image);
+    public ResponseEntity<?> addPosts(@ModelAttribute @Valid PostCreateDto dto) throws IOException {
+        Long post = freeBoardService.create(dto);
         SuccessResponse response = new SuccessResponse(true,POST_CREATE_SUCCESS,post);
         return  new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -42,9 +41,8 @@ public class FreeBoardController {
     @PutMapping(FREE_BOARDS_UPDATE_POST)
     @PreAuthorize("isAuthenticated()") // 작성자만 수정 가능
     public ResponseEntity<?> updatePosts(@ModelAttribute @Valid PostUpdateDto dto,
-                                         @PathVariable Long boardId,
-                                         @RequestPart MultipartFile image) throws IOException {
-        Long post = freeBoardService.update(dto, boardId, image);
+                                         @PathVariable Long boardId) throws IOException {
+        Long post = freeBoardService.update(dto, boardId);
         SuccessResponse response = new SuccessResponse(true,POST_UPDATE_SUCCESS,post);
         return  new ResponseEntity<>(response, HttpStatus.OK);
     }

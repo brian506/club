@@ -13,9 +13,9 @@ import java.util.List;
 
 @Entity
 @Getter
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseTimeEntity {
 
     @Id
@@ -67,6 +67,13 @@ public class User extends BaseTimeEntity {
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+    public void updateProfile(String username,String email,String phoneNumber,String birth,String personality) {
+        this.username = username;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.birth = birth;
+        this.personality = personality;
     }
 }
 

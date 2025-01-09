@@ -18,9 +18,9 @@ import java.util.List;
 
 public interface PostService  {
 
-    Long create(PostCreateDto postCreateDto, MultipartFile image) throws IOException;
+    Long create(PostCreateDto postCreateDto) throws IOException;
 
-    Long update(PostUpdateDto postUpdateDto,Long postId,MultipartFile image) throws IOException;
+    Long update(PostUpdateDto postUpdateDto,Long postId) throws IOException;
 
     void delete(Long postId);
 

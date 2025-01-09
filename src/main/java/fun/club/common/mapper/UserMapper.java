@@ -41,13 +41,16 @@ public interface UserMapper {
     /**
      * 수정 관련된 Mapping 은 void 반환이 적합한 이유?
      * @MappingTarget 은 기존 객체를 직접 수정하므로 새로운 객체를 생성하지 않아도 돼서 반환값이 필요없다
+     *
+     * 개삽질을 해봐도 안되길래 그냥 User 클래스에 updateProfile() 연관관계 메서드로 서비스단에서 처리했다.
      */
-    @Mapping(target = "role", ignore = true)
-    @Mapping(target = "absencePoint", ignore = true)
-    @Mapping(target = "boards", ignore = true)
-    @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "refreshToken", ignore = true)
-    void fixEntity(UserUpdateDto userUpdateDto, @MappingTarget User user);
+//    @Mapping(target = "role", ignore = true)
+//    @Mapping(target = "absencePoint", ignore = true)
+//    @Mapping(target = "boards", ignore = true)
+//    @Mapping(target = "comments", ignore = true)
+//    @Mapping(target = "refreshToken", ignore = true)
+//    @BeanMapping(builder = @Builder(disableBuilder = false)) // Builder 사용
+//    void fixEntity(UserUpdateDto userUpdateDto, @MappingTarget User.UserBuilder user);
 
     UserInfoResponse toDto(User user);
 

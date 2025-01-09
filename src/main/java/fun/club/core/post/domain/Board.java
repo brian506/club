@@ -45,6 +45,12 @@ public abstract class Board extends BaseTimeEntity {
         this.comments = comments;
         this.postDetails = postDetails != null ? postDetails : PostDetails.builder().build();
     }
+    public void update(String title,String content,String file){
+        if (this.postDetails == null){
+            this.postDetails = PostDetails.builder().build();
+        }
+        this.postDetails.update(title,content,file);
+    }
     /**
      * -- SETTER --
      *  외래 키 관리로 각각의 board 는 해당 게시물 내용이 DB 에서는 보여지지 않는다.

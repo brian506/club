@@ -35,9 +35,8 @@ public class NoticeBoardController {
     // 게시물 작성
     @PostMapping(NOTICE_BOARDS_ADD_POST)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> addPosts(@ModelAttribute @Valid PostCreateDto dto,
-                                      @RequestPart MultipartFile image) throws IOException {
-        Long post = noticeBoardService.create(dto,image);
+    public ResponseEntity<?> addPosts(@ModelAttribute @Valid PostCreateDto dto) throws IOException {
+        Long post = noticeBoardService.create(dto);
         SuccessResponse response = new SuccessResponse(true,POST_CREATE_SUCCESS,post);
         return  new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -46,12 +45,11 @@ public class NoticeBoardController {
     @PutMapping(NOTICE_BOARDS_UPDATE_POST)
     @PreAuthorize("isAuthenticated()") // 인증성공한 유저만 가능
     public ResponseEntity<?> updatePosts(@ModelAttribute @Valid PostUpdateDto dto,
-                                         @PathVariable Long boardId,
-                                         @RequestPart MultipartFile image) throws IOException {
-        Long post = noticeBoardService.update(dto,boardId, image);
+                                         @PathVariable Long boardId) throws IOException {
+        Long post = noticeBoardService.update(dto,boardId);
         SuccessResponse response = new SuccessResponse(true,POST_UPDATE_SUCCESS,post);
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+    } //
 
     // 게시물 삭제
     @DeleteMapping(NOTICE_BOARDS_DELETE_POST)

@@ -27,6 +27,21 @@ public class PostDetails {
         this.file = file;
     } // 임베비드 필드값들의 상태가 변하면 안될 때 위에 두 개 생성
 
+    /**
+     * update 관련 메서드
+     * null 의 유무에 관한 설정은 각 필드 값 중 일부만 업데이트할 수 있기 때문
+     */
+    public void update(String title, String content, String file) {
+        if(title != null){
+            this.title = title;
+        }
+        if(content != null){
+            this.content = content;
+        }
+        if(file != null){
+            this.file = file;
+        }
+    }
 }
 
 /**

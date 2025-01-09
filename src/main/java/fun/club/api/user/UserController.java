@@ -6,6 +6,7 @@ import fun.club.common.request.UserUpdateDto;
 import fun.club.common.response.AuthResponse;
 import fun.club.common.response.UserInfoResponse;
 import fun.club.common.util.SuccessResponse;
+import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
 import fun.club.secure.service.JwtService;
 import fun.club.secure.service.LoginService;
@@ -65,10 +66,11 @@ public class UserController {
         SuccessResponse response = new SuccessResponse<>(true,PROFILE_UPDATE_SUCCESS,updateDto);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+
     // 회원 이미지 수정
     @PutMapping( USERS_UPDATE_IMAGE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<?> updateImage(@PathVariable Long userId,@RequestParam(value = "profileImage",required = false) MultipartFile profileImage) throws IOException {
+    public ResponseEntity<?> uploadImage(@PathVariable Long userId,@RequestParam(value = "profileImage",required = false) MultipartFile profileImage) throws IOException {
         userService.uploadImage(userId,profileImage);
         SuccessResponse response = new SuccessResponse<>(true,PROFILE_UPDATE_SUCCESS,userId);
         return new ResponseEntity<>(response,HttpStatus.OK);

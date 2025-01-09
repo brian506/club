@@ -117,14 +117,16 @@ public class UserService {
     public void updateProfile(UserUpdateDto updateDto) throws IOException {
         String currentUserEmail = SecurityUtil.getLoginUsername();
         User user = OptionalUtil.getOrElseThrow(userRepository.findByEmail(currentUserEmail),"존재하지 않는 회원 ID 입니다");
-        System.out.println("Before Mapping: " + user);
-
-        userMapper.fixEntity(updateDto, user);
-
-        // After mapping
-        System.out.println("After Mapping: " + user);
-        userRepository.save(user);
+        user.updateProfile(
+                updateDto.getUsername(),
+                updateDto.getEmail(),
+                updateDto.getPhoneNumber(),
+                updateDto.getBirth(),
+                updateDto.getPersonality()
+        );
+        // JPA의 변경 감지로 자동 저장(더티 체킹)
     }
+
     public String getProfileImageUrl(Long userId) {
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(userId), "존재하지 않는 회원 ID 입니다");
         return user.getProfileImageUrl();
@@ -136,6 +138,7 @@ public class UserService {
      */
 
     // id 로 회원 조회
+    @Transactional(readOnly = true)
     public UserInfoResponse findById(Long id) {
         User user = OptionalUtil.getOrElseThrow(userRepository.findById(id),"존재하지 않는 회원 ID 입니다.");
         return userMapper.toDto(user);

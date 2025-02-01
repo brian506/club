@@ -35,3 +35,7 @@ public class RedisConfig {
         return template;
     }
 }
+/**
+ * 값이 계속해서 변경되는 로직에는 비용 측면에서 손해라 지양해야 한다.
+ * 주로 값을 빠르게 조회하기만 할 때 redis 를 사용한다.
+ */

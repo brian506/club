@@ -92,4 +92,6 @@ public class FreeBoardController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
+
 }

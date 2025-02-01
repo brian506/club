@@ -59,6 +59,13 @@ public class NoticeBoardController {
         SuccessResponse response = new SuccessResponse<>(true,POST_DELETE_SUCCESS,boardId);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
+    // 게시물 단일 조회
+    @GetMapping(NOTICE_BOARDS_FIND_BY_ID)
+    public ResponseEntity<?> findById(@PathVariable Long boardId){
+        BoardResponse board = noticeBoardService.findById(boardId);
+        SuccessResponse response = new SuccessResponse(true,ID_POSTS_RETRIEVE_SUCCESS,board);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 
     // 사용자 이름으로 게시물 조회
     @GetMapping(NOTICE_BOARDS_FIND_BY_USER)
@@ -88,6 +95,7 @@ public class NoticeBoardController {
         SuccessResponse response = new SuccessResponse(true, ALL_POSTS_RETRIEVE_SUCCESS, boards);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 }
 /**
  * @RequestPart는 HTTP request body에 multipart/form-data 가 포함되어 있는 경우에 사용하는 어노테이션입니다.

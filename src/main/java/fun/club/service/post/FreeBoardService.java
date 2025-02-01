@@ -15,6 +15,8 @@ import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
 import fun.club.service.file.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -76,19 +78,10 @@ public class FreeBoardService implements PostService{
 
     // 게시물 삭제
     @Override
-    public void delete(Long postId) {
-        Optional<Board> freeBoard = boardRepository.findById(postId);
+    public void delete(Long boardId) {
+        Optional<Board> freeBoard = boardRepository.findById(boardId);
         boardRepository.delete(freeBoard.get());
     }
-
-    // 단일 게시물 조회
-    public BoardResponse findById(Long postId) {
-        FreeBoard board = (FreeBoard) OptionalUtil.getOrElseThrow(boardRepository.findById(postId),"존재하지 않는 게시물입니다.");
-        board.setViews(board.getViews() + 1); // 조회수 증가
-        boardRepository.save(board);
-        return boardMapper.responseToDto(board);
-    }
-
     // 게시물 조회(pageable) - 사용자가 작성한 게시물들 조회
     @Override
     public Page<BoardResponse> findAllByWriter(Long userId,Pageable pageable) {
@@ -115,4 +108,16 @@ public class FreeBoardService implements PostService{
         Page<FreeBoard> boards = boardRepository.findAllFreeBoardPosts(pageable);
         return boards.map(boardMapper::responseToDto); // FreeBoard를 BoardResponse로 변환
     }
+
+    @Transactional
+    @Cacheable(value = "viewCountCache",key = "'FreeBoard:' +#boardId")
+    public BoardResponse findById(Long boardId) {
+        FreeBoard board = (FreeBoard) OptionalUtil.getOrElseThrow(boardRepository.findById(boardId),"존재하지 않는 게시물입니다");
+        board.setViews(board.getViews() + 1);
+        boardRepository.save(board);
+
+        return boardMapper.responseToDto(board);
+    }
+
+
 }

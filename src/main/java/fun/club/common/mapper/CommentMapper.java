@@ -18,11 +18,15 @@ public interface CommentMapper {
 
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
+    @Mapping(target = "id",ignore = true)
+    @Mapping(target = "writer",source = "writer")
+    @Mapping(target = "board",source = "board")
+    Comment toEntity(CommentRequest commentRequest,User writer,Board board);
 
-    @Mapping(target = "writer", source = "comment.writer")
-    @Mapping(target = "commentId", source = "comment.id") // 예시: 댓글의 ID
-    @Mapping(target = "boardId", source = "comment.board.id")
-    CommentResponse toCommentDto(Comment comment);
+    @Mapping(target = "createTime",ignore = true)
+    @Mapping(target = "updateTime",ignore = true)
+    @Mapping(target = "username",ignore = true)
+    CommentResponse commentToDto(Comment comment);
 
 
 }

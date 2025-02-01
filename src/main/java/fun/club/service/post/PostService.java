@@ -20,7 +20,7 @@ public interface PostService  {
 
     Long create(PostCreateDto postCreateDto) throws IOException;
 
-    Long update(PostUpdateDto postUpdateDto,Long postId) throws IOException;
+    Long update(PostUpdateDto postUpdateDto,Long boardId) throws IOException;
 
     void delete(Long postId);
 
@@ -29,6 +29,8 @@ public interface PostService  {
     List<BoardResponse> findByTitle(String title);
 
     Page<BoardResponse> findAllFromBoard(int pageNo, int pageSize, String criteria);
+
+    BoardResponse findById(Long boardId);
 
 
 

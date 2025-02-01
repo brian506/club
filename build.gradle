@@ -1,7 +1,15 @@
+//// 1. queryDsl version 정보 추가
+//buildscript {
+//	ext {
+//		queryDslVersion = "5.0.0"
+//	}
+//}
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.2'
 	id 'io.spring.dependency-management' version '1.1.6'
+	// 2. querydsl plugins 추가
+//	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'fun'
@@ -32,6 +40,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	compileOnly 'org.projectlombok:lombok'
@@ -42,6 +51,11 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testImplementation 'org.assertj:assertj-core:3.24.2' // 최신 버전 확인 후 사용
+
+//	//queryDSL
+//	implementation 'com.querydsl:querydsl-jpa'
+//	annotationProcessor 'com.querydsl:querydsl-apt'
+//	annotationProcessor 'javax.persistence:javax.persistence-api'
 
 
 

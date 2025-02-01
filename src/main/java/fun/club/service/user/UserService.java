@@ -162,4 +162,20 @@ public class UserService {
     }
 
 }
+/**
+ * 파라미터에 final 를 붙이는 경우
+ *      - DB 의 기본 키나 변경하지 않을 고유값을 다룰 때
+ * public User getUserById(final Long id) {
+ *     return userRepository.findById(id)
+ *             .orElseThrow(() -> new NotFoundException("User not found"));
+ * }
+ *
+ * 파라미터에 final 를 붙이지 않는 경우
+ *      - 파라미터를 가빈으로 데이터를 가공하거나 새로운 값을 생성해야 하는 경우
+ * public User getUserByEmail(String email) {
+ *     email = email.trim().toLowerCase(); // 가공 필요
+ *     return userRepository.findByEmail(email)
+ *             .orElseThrow(() -> new NotFoundException("User not found"));
+ * }
+ */
 

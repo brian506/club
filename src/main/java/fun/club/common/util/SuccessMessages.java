@@ -21,6 +21,8 @@ public class SuccessMessages {
         public static final String AUTH_USER_INFO_SUCCESS = "인증정보 조회 성공";
         public static final String USER_DELETE_SUCCESS = "회원 삭제 성공";
 
+        // comment
+
 
 
 }

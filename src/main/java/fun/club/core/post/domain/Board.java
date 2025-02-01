@@ -31,8 +31,10 @@ public abstract class Board extends BaseTimeEntity {
     @OneToMany(mappedBy = "board")
     private List<Comment> comments = new ArrayList<>();
 
+    private Long commentCount = 0L; // 댓글 갯수
+
     @Setter
-    private int views; // 조회수
+    private Long views = 0L;  // 게시물 조회수
 
     @Embedded
     private PostDetails postDetails;
@@ -50,6 +52,13 @@ public abstract class Board extends BaseTimeEntity {
             this.postDetails = PostDetails.builder().build();
         }
         this.postDetails.update(title,content,file);
+    }
+    public void incrementCommentCount(){
+        this.commentCount++;
+    }
+    // 0 이상
+    public void decrementCommentCount(){
+        this.commentCount = Math.max(this.commentCount-1,0);
     }
     /**
      * -- SETTER --

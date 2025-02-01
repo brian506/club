@@ -19,11 +19,13 @@ public class ApiPostUrlConstants {
     // NoticeBoard
     public static final String NOTICE_BOARDS_BASE_URL = BASE_API_URL + "/noticeBoards";
     public static final String NOTICE_BOARDS_FIND_ALL = NOTICE_BOARDS_BASE_URL;
-    public static final String NOTICE_BOARDS_FIND_BY_USER = NOTICE_BOARDS_BASE_URL + "/{userId}";
+    public static final String NOTICE_BOARDS_FIND_BY_USER = NOTICE_BOARDS_BASE_URL + "/writer/{userId}";
     public static final String NOTICE_BOARDS_FIND_BY_TITLE = NOTICE_BOARDS_BASE_URL + "/title";
     public static final String NOTICE_BOARDS_ADD_POST = NOTICE_BOARDS_BASE_URL + "/admins";
     public static final String NOTICE_BOARDS_UPDATE_POST = NOTICE_BOARDS_BASE_URL + "/admins/{boardId}";
     public static final String NOTICE_BOARDS_DELETE_POST = NOTICE_BOARDS_BASE_URL + "/admins/{boardId}";
+    public static final String NOTICE_BOARDS_FIND_BY_ID = NOTICE_BOARDS_BASE_URL + "/{boardId}";
+
 
     // FreeBoard
     public static final String FREE_BOARDS_BASE_URL = BASE_API_URL + "/freeBoards";
@@ -35,11 +37,13 @@ public class ApiPostUrlConstants {
     public static final String FREE_BOARDS_DELETE_POST = FREE_BOARDS_BASE_URL + "/{boardId}";
     public static final String FREE_BOARDS_FIND_BY_ID = FREE_BOARDS_BASE_URL + "/{boardId}";
 
+
     // Comment
     public static final String COMMENTS_BASE_URL = BASE_API_URL + "/comments";
-    public static final String COMMENTS_ADD_POST = COMMENTS_BASE_URL;
+    public static final String COMMENTS_ADD_POST = COMMENTS_BASE_URL +"/{boardId}";
     public static final String COMMENTS_UPDATE_POST = COMMENTS_BASE_URL;
-    public static final String COMMENTS_DELETE_POST = COMMENTS_BASE_URL + "/{commentId}";
+    public static final String COMMENTS_DELETE_POST = COMMENTS_BASE_URL + "/{boardId}/{commentId}";
+    public static final String COMMENTS_GET_COUNT = COMMENTS_BASE_URL + "/{boardId}/count";
 }
 
 

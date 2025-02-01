@@ -8,12 +8,15 @@ import fun.club.common.util.ListUtil;
 import fun.club.common.util.OptionalUtil;
 import fun.club.common.util.SecurityUtil;
 import fun.club.core.post.domain.Board;
+import fun.club.core.post.domain.FreeBoard;
 import fun.club.core.post.domain.NoticeBoard;
 import fun.club.core.post.repository.BoardRepository;
 import fun.club.core.user.domain.User;
 import fun.club.core.user.repository.UserRepository;
 import fun.club.service.file.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,9 +46,9 @@ public class NoticeBoardService implements PostService {
     @Override
     public Long create(PostCreateDto postCreateDto) throws IOException {
 
-        User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()),"존재하지 않는 회원입니다.");
+        User writer = OptionalUtil.getOrElseThrow(userRepository.findByEmail(SecurityUtil.getLoginUsername()), "존재하지 않는 회원입니다.");
 
-        NoticeBoard noticeBoard = boardMapper.noticeBoardFromDto(postCreateDto,writer);
+        NoticeBoard noticeBoard = boardMapper.noticeBoardFromDto(postCreateDto, writer);
         MultipartFile file = postCreateDto.getImage();
 
         if (file != null && !file.isEmpty()) {
@@ -60,7 +63,7 @@ public class NoticeBoardService implements PostService {
     @Override
     public Long update(PostUpdateDto postUpdateDto, Long boardId) throws IOException {
         NoticeBoard noticeBoard = (NoticeBoard) OptionalUtil.getOrElseThrow(
-                boardRepository.findById(boardId),"존재하지 않는 게시물입니다.");
+                boardRepository.findById(boardId), "존재하지 않는 게시물입니다.");
 
         // 연관관계 메서드로 update 기능 수행
         noticeBoard.update(
@@ -76,25 +79,18 @@ public class NoticeBoardService implements PostService {
         return noticeBoard.getId(); // dirty checking
     } // 파라미터로 file 을 받지 않고 dto 에 있는 값을 써준다
 
-    // 게시물 삭제
-    @Override
-    public void delete(Long boardId) {
-        Optional<Board> noticeBoard = boardRepository.findById(boardId);
-        boardRepository.delete(noticeBoard.get());
-    }
-
     // 게시물 조회(pageable) - 사용자가 작성한 게시물들 조회
     @Override
-    public Page<BoardResponse> findAllByWriter(Long userId,Pageable pageable) {
-        User writer = OptionalUtil.getOrElseThrow(userRepository.findById(userId),"존재하지 않는 회원입니다.");
-        Page<Board> boards = boardRepository.findAllByWriter(writer,pageable);
+    public Page<BoardResponse> findAllByWriter(Long userId, Pageable pageable) {
+        User writer = OptionalUtil.getOrElseThrow(userRepository.findById(userId), "존재하지 않는 회원입니다.");
+        Page<Board> boards = boardRepository.findAllByWriter(writer, pageable);
         return boards.map(boardMapper::responseToDto);
     }
 
     // 공지게시판 엔티티에서 제목 조회
     @Override
     public List<BoardResponse> findByTitle(String title) {
-        List<NoticeBoard> boards = ListUtil.getOrElseThrowList(boardRepository.findByTitleInNoticeBoard(title),"검색 조건에 맞는 게시물이 없습니다.");
+        List<NoticeBoard> boards = ListUtil.getOrElseThrowList(boardRepository.findByTitleInNoticeBoard(title), "검색 조건에 맞는 게시물이 없습니다.");
         return boards.stream()
                 .map(boardMapper::responseToDto)
                 .collect(Collectors.toList());
@@ -107,7 +103,25 @@ public class NoticeBoardService implements PostService {
         Page<NoticeBoard> boards = boardRepository.findAllNoticeBoardPosts(pageable);
         return boards.map(boardMapper::responseToDto); // NoticeBoard를 BoardResponse로 변환
     }
+
+    @Transactional
+    @Cacheable(value = "viewCountCache", key = "'NoticeBoard:'+#boardId")
+    public BoardResponse findById(Long boardId) {
+        NoticeBoard board = (NoticeBoard) OptionalUtil.getOrElseThrow(boardRepository.findById(boardId), "존재하지 않는 게시물입니다");
+        board.setViews(board.getViews() + 1);
+        boardRepository.save(board);
+
+        return boardMapper.responseToDto(board); // 조회수 반환
     }
+
+    // 게시물 삭제
+    @Override
+    @CacheEvict(value = "viewCountCache", key = "'NoticeBoard:'+ #boardId")
+    public void delete(Long boardId) {
+        Optional<Board> noticeBoard = boardRepository.findById(boardId);
+        boardRepository.delete(noticeBoard.get());
+    }
+}
 
     // 게시물 전체 조회
 
